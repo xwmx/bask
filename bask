@@ -1,23 +1,17 @@
 #!/usr/bin/env bash
 #
-#                                                 .___
-#   ____  ____   _____   _____ _____    ____    __| _/______
-# _/ ___\/  _ \ /     \ /     \\__  \  /    \  / __ |/  ___/
-# \  \__(  <_> )  Y Y  \  Y Y  \/ __ \|   |  \/ /_/ |\___ \
-#  \___  >____/|__|_|  /__|_|  (____  /___|  /\____ /____  >
-#      \/            \/      \/     \/     \/      \/    \/
+#                   ___         ___         ___
+#      _____       /  /\       /  /\       /__/|
+#     /  /::\     /  /::\     /  /:/_     |  |:|
+#    /  /:/\:\   /  /:/\:\   /  /:/ /\    |  |:|
+#   /  /:/~/::\ /  /:/~/::\ /  /:/ /::\ __|  |:|
+#  /__/:/ /:/\:/__/:/ /:/\:/__/:/ /:/\:/__/\_|:|____
+#  \  \:\/:/~/:\  \:\/:/__\\  \:\/:/~/:\  \:\/:::::/
+#   \  \::/ /:/ \  \::/     \  \::/ /:/ \  \::/~~~~
+#    \  \:\/:/   \  \:\      \__\/ /:/   \  \:\
+#     \  \::/     \  \:\       /__/:/     \  \:\
+#      \__\/       \__\/       \__\/       \__\/
 #
-# Boilerplate for creating a bash program with commands.
-#
-# Depends on:
-#  list
-#  of
-#  programs
-#  expected
-#  in
-#  environment
-#
-# Bash Boilerplate: https://github.com/alphabetum/bash-boilerplate
 #
 # Copyright (c) 2015 William Melody • hi@williammelody.com
 
@@ -358,9 +352,52 @@ _me=$(basename "$0")
 
 _debug printf "\$_me: %s\n" "$_me"
 
+# $_caller_directory
+#
+# Set to the current directory that the program is called from.
+_caller_directory="$PWD"
+
 ###############################################################################
 # Load Commands
 ###############################################################################
+
+# _search_parents_and_source()
+#
+# Recursively search parent directories for a file with the given basenameand
+# source the first one that's found.
+#
+# Usage:
+#   _search_parents_and_source "filename"
+_search_parents_and_source() {
+  local source_file="$1"
+  if [[ / == "$PWD" ]]; then
+    cd "${_caller_directory}"
+    return
+  elif [[ -f "${source_file}" ]]; then
+    source "${source_file}"
+    cd "${_caller_directory}"
+    return
+  else
+    cd ..
+    _search_parents_and_source "${source_file}"
+  fi
+}
+
+# _source_baskfile()
+#
+# Source the first Baskfile found in the current directory or any parent
+# directories.
+#
+# Usage:
+#   _source_baskfile
+_source_baskfile() {
+  local source_file="Baskfile"
+  if [[ -f "$PWD/${source_file}" ]]; then
+    source "${source_file}"
+  else
+    _search_parents_and_source "${source_file}"
+  fi
+}
 
 # Initialize defined_commands array.
 defined_commands=()
@@ -375,6 +412,8 @@ _load_commands() {
 
   _debug printf "_load_commands(): entering...\n"
   _debug printf "_load_commands() declare -F:\n%s\n" "$(declare -F)"
+
+  _source_baskfile
 
   # declare is a bash built-in shell function that, when called with the '-F'
   # option, displays all of the functions with the format
@@ -592,14 +631,18 @@ EOM
 help() {
   if [[ ${#command_argv[@]} = 1 ]]; then
     cat <<EOM
-                                                .___
-  ____  ____   _____   _____ _____    ____    __| _/______
-_/ ___\/  _ \ /     \ /     \\\\__  \  /    \  / __ |/  ___/
-\  \__(  <_> )  Y Y  \  Y Y  \/ __ \|   |  \/ /_/ |\___ \\
- \___  >____/|__|_|  /__|_|  (____  /___|  /\____ /____  >
-     \/            \/      \/     \/     \/      \/    \/
 
-Boilerplate for creating a bash program with commands.
+                  ___         ___         ___
+     _____       /  /\\       /  /\\       /__/|
+    /  /::\\     /  /::\\     /  /:/_     |  |:|
+   /  /:/\\:\\   /  /:/\\:\\   /  /:/ /\\    |  |:|
+  /  /:/~/::\\ /  /:/~/::\\ /  /:/ /::\\ __|  |:|
+ /__/:/ /:/\\:/__/:/ /:/\\:/__/:/ /:/\\:/__/\\_|:|____
+ \\  \\:\\/:/~/:\\  \\:\\/:/__\\\\  \\:\\/:/~/:\\  \\:\\/:::::/
+  \\  \\::/ /:/ \\  \\::/     \\  \\::/ /:/ \\  \\::/~~~~
+   \\  \\:\\/:/   \\  \\:\\      \\__\\/ /:/   \\  \\:\\
+    \\  \\::/     \\  \\:\\       /__/:/     \\  \\:\\
+     \\__\\/       \\__\\/       \\__\\/       \\__\\/
 
 Version: $_VERSION
 
@@ -640,6 +683,35 @@ commands() {
   else
     printf "Available commands:\n"
     printf "  %s\n" "${defined_commands[@]}"
+  fi
+}
+
+# init ########################################################################
+
+desc init <<EOM
+Usage:
+  $_me init
+
+Description:
+  Create a Baskfile in the current directory.
+EOM
+init() {
+  _debug printf "init() \$PWD: %s\n" "${_caller_directory}"
+
+  if [[ -f "Baskfile" ]]; then
+    printf ">> Baskfile already exists, nothing to do\n"
+    exit 0
+  else
+    printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
+    printf "\
+#! /usr/bin/env bash
+
+# run this task with: $ %s hello
+hello() {
+  echo \">> Hello from %s!\"
+}
+" "$_me" "$_me" >> "Baskfile"
+    exit 0
   fi
 }
 
@@ -753,5 +825,4 @@ example() {
 
 # Calling the _main function after everything has been defined.
 _main
-
 
