@@ -707,6 +707,13 @@ init() {
 #! /usr/bin/env bash
 
 # run this task with: $ %s hello
+desc hello <<EOM
+Usage:
+  $_me hello
+
+Description:
+  Print a greeting.
+EOM
 hello() {
   echo \">> Hello from %s!\"
 }
