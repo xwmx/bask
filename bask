@@ -697,10 +697,11 @@ commands() {
 
 desc init <<EOM
 Usage:
-  $_me init
+  $_me init [program]
 
 Description:
-  Create a Baskfile in the current directory.
+  Create a Baskfile in the current directory. If a program name is provided,
+  generate a $_me-dependent program with the provided name.
 EOM
 _generate_baskfile() {
   if [[ -f "Baskfile" ]]; then
@@ -724,10 +725,44 @@ hello() {
     exit 0
   fi
 }
+_generate_bask_script() {
+  if [[ -f "$1" ]]; then
+    printf ">> %s already exists\n" "$1"
+    exit 0
+  else
+    local _script_basename="$(basename "$1")"
+    printf ">> Creating new bask script: %s\n" "$1"
+    printf "\
+#!/usr/bin/env bash
+
+source \"\$(which bask)\"
+
+# run this task with: $ %s hi
+desc hi <<EOM
+Usage:
+  %s hi
+
+Description:
+  Print a greeting.
+EOM
+hi() {
+  echo \">> Hi from %s!\"
+}
+
+_main
+" "$_script_basename" "$_script_basename" "$_script_basename" >> "$1"
+    chmod +x "$1"
+    exit 0
+  fi
+}
 init() {
   _debug printf "init() \$PWD: %s\n" "${_caller_directory}"
 
-  _generate_baskfile
+  if [[ -n "${1:-}" ]]; then
+    _generate_bask_script "$1"
+  else
+    _generate_baskfile
+  fi
 }
 
 ###############################################################################
