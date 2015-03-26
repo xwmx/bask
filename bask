@@ -711,8 +711,6 @@ init() {
   else
     printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
     printf "\
-#! /usr/bin/env bash
-
 # run this task with: $ %s hello
 desc hello <<EOM
 Usage:
