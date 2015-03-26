@@ -702,9 +702,7 @@ Usage:
 Description:
   Create a Baskfile in the current directory.
 EOM
-init() {
-  _debug printf "init() \$PWD: %s\n" "${_caller_directory}"
-
+_generate_baskfile() {
   if [[ -f "Baskfile" ]]; then
     printf ">> Baskfile already exists, nothing to do\n"
     exit 0
@@ -725,6 +723,11 @@ hello() {
 " "$_me" "$_me" >> "Baskfile"
     exit 0
   fi
+}
+init() {
+  _debug printf "init() \$PWD: %s\n" "${_caller_directory}"
+
+  _generate_baskfile
 }
 
 ###############################################################################
