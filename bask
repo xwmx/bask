@@ -705,7 +705,7 @@ Description:
 EOM
 _generate_baskfile() {
   if [[ -f "Baskfile" ]]; then
-    printf ">> Baskfile already exists, nothing to do\n"
+    printf ">> Baskfile already exists in this location.\n"
     exit 0
   else
     printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
