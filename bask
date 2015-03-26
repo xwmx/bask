@@ -713,7 +713,7 @@ _generate_baskfile() {
 # run this task with: $ %s hello
 desc hello <<EOM
 Usage:
-  $_me hello
+  %s hello
 
 Description:
   Print a greeting.
@@ -721,7 +721,9 @@ EOM
 hello() {
   echo \">> Hello from %s!\"
 }
-" "$_me" "$_me" >> "Baskfile"
+" "$_me" \
+  "$_me" \
+  "$_me" >> "Baskfile"
     exit 0
   fi
 }
@@ -735,7 +737,7 @@ _generate_bask_script() {
     printf "\
 #!/usr/bin/env bash
 
-source \"\$(which bask)\"
+source \"\$(which %s)\"
 
 # run this task with: $ %s hi
 desc hi <<EOM
@@ -750,7 +752,10 @@ hi() {
 }
 
 _main
-" "$_script_basename" "$_script_basename" "$_script_basename" >> "$1"
+" "$_me" \
+  "$_script_basename" \
+  "$_script_basename" \
+  "$_script_basename" >> "$1"
     chmod +x "$1"
     exit 0
   fi
