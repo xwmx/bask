@@ -776,107 +776,82 @@ init() {
 
 ###############################################################################
 # Commands
-# ========.....................................................................
+# =============================================================================
 #
 # Example command group structure:
 #
 # desc example ""   - Optional. A short description for the command.
 # example() { : }   - The command called by the user.
 #
+# For usage formatting conventions see:
+#   - http://docopt.org/
+#   - http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
 #
-# desc example <<EOM
-#   Usage:
-#     $_me example
 #
-#   Description:
-#     Print "Hello, World!"
+# ==============
+# Micro Example
+# ==============
 #
-#     For usage formatting conventions see:
-#     - http://docopt.org/
-#     - http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
+# desc micro <<EOM
+# Usage: $_me micro
 # EOM
-# example() {
-#   printf "Hello, World!\n"
+# micro() {
+#   echo "Hello, World!"
 # }
 #
+# ==============
+# Simple Example
+# ==============
+#
+# desc simple <<EOM
+# Usage:
+#   $_me simple [<name>]
+#
+# Description:
+#   Print the greeting, "Hello, World!"
+# EOM
+# simple() {
+#   if [[ -n "${1:-}" ]]; then
+#     local name="$1"
+#   else
+#     local name="World"
+#   fi
+#   printf "Hello, %s!\n" "$name"
+# }
+#
+# ===============
+# Complex Example
+# ===============
+#
+# desc complex <<EOM
+# Usage:
+#   $_me complex [<name>] [--farewell]
+#
+# Options:
+#   --farewell  Print "Goodbye, World!"
+#
+# Description:
+#   Print the greeting, "Hello, World!"
+# EOM
+# complex() {
+#   local greeting="Hello"
+#   local arguments=()
+#
+#   for arg in "${command_argv[@]:-}"; do
+#     case $arg in
+#     --farewell) greeting="Goodbye";;
+#     -*) _die printf "Unexpected option: %s\n" "$arg";;
+#     *) arguments+=($arg);;
+#     esac
+#   done
+#   local name=${arguments[1]:-}
+#   if [[ -n "$name" ]]; then
+#     printf "%s, %s!\n" "$greeting" "$name"
+#   else
+#     printf "%s, World!\n" "$greeting"
+#   fi
+# }
 ###############################################################################
-
-# Example Section #############################################################
-
-# --------------------------------------------------------------------- example
-
-desc example <<EOM
-Usage:
-  $_me example [<name>] [--farewell]
-
-Options:
-  --farewell  Print "Goodbye, World!"
-
-Description:
-  Print "Hello, World!"
-EOM
-example() {
-  # These debug statements demonstrate the different behaviors of the
-  # positional parameters, the special variables, and the two generated
-  # command argument arrays.
-  #
-  # Note in particular that $@ and $* omit the script name like the
-  # $command_parameters array does, whereas the positional parameter variables
-  # $0, $1, $2 do include it, like the $command_argv array.
-  #
-  # Individual elements 0, 1, and 2 of each:
-  _debug printf "example() \$0: %s\n" "${0:-}"
-  _debug printf "example() \${command_argv[0]:-}: %s\n" "${command_argv[0]:-}"
-  _debug \
-    printf "example() \${command_parameters[0]:-}: %s\n" \
-    "${command_parameters[0]:-}"
-  _debug printf "example() \$1: %s\n" "${1:-}"
-  _debug printf "example() \${command_argv[1]:-}: %s\n" "${command_argv[1]:-}"
-  _debug \
-    printf "example() \${command_parameters[1]:-}: %s\n" \
-    "${command_parameters[1]:-}"
-  _debug printf "example() \$2: %s\n" "${2:-}"
-  _debug printf "example() \${command_argv[2]:-}: %s\n" "${command_argv[2]:-}"
-  _debug \
-    printf "example() \${command_parameters[2]:-}: %s\n" \
-    "${command_parameters[2]:-}"
-  # Each expanded to string:
-  _debug printf "example() \${*:-}: %s\n" "${*:-}"
-  _debug printf "example() \${command_argv[*]:-}: %s\n" "${command_argv[*]:-}"
-  _debug \
-    printf "example() \${command_parameters[*]:-}: %s\n" \
-    "${command_parameters[*]:-}"
-
-  # Set default greeting.
-  local greeting="Hello"
-  # Initialize arguments array.
-  local arguments=()
-
-  # Parse command arguments.
-  for arg in "${command_argv[@]:-}"; do
-    case $arg in
-    --farewell) greeting="Goodbye";;
-    -*) _die printf "Unexpected option: %s\n" "$arg";;
-    *) arguments+=($arg);;
-    esac
-  done
-
-  _debug printf "example() \${arguments[0]:-}: %s\n" "${arguments[0]:-}"
-  _debug printf "example() \${arguments[1]:-}: %s\n" "${arguments[1]:-}"
-
-  local name=${arguments[1]:-}
-
-  _debug printf "example() \$greeting: %s\n" "$greeting"
-  _debug printf "example() \$name: %s\n" "$name"
-
-  if [[ "$name" == "Moon" ]]; then
-    printf "%s, Luna!\n" "$greeting"
-  elif [[ -n "$name" ]]; then
-    printf "%s, %s!\n" "$greeting" "$name"
-  else
-    printf "%s, World!\n" "$greeting"
-  fi
-}
 
 ###############################################################################
 # Run Program
