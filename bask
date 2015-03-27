@@ -627,10 +627,15 @@ Usage:
 Description:
   Display help information for $_me or a specified command.
 EOM
-help() {
-  if [[ ${#command_argv[@]} = 1 ]]; then
-    cat <<EOM
+_help_header() {
+if _is_sourced; then
+  cat <<EOM
+\`$_me\`, a $_this_basename script.
 
+$_this_basename version: $_VERSION
+EOM
+else
+  cat <<EOM
                   ___         ___         ___
      _____       /  /\\       /  /\\       /__/|
     /  /::\\     /  /::\\     /  /:/_     |  |:|
@@ -644,6 +649,13 @@ help() {
      \\__\\/       \\__\\/       \\__\\/       \\__\\/
 
 Version: $_VERSION
+EOM
+fi
+}
+help() {
+  if [[ ${#command_argv[@]} = 1 ]]; then
+    cat <<EOM
+$(_help_header)
 
 Usage:
   $_me <command> [--command-options] [<arguments>]
