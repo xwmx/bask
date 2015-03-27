@@ -430,15 +430,24 @@ _load_commands() {
 
     # Add the function name to the $defined_commands array unless it starts
     # with an underscore or is one of the desc(), debug(), or die() functions,
-    # since these are treated as having 'private' visibility.
-    if ! ( [[ "$function_name" =~ ^_(.*)  ]] || \
-           [[ "$function_name" == "desc"  ]] || \
-           [[ "$function_name" == "debug" ]] || \
-           [[ "$function_name" == "die"   ]]
+    # since these are treated as having 'private' visibility. Also exclude
+    # init() and version(), which will be readded explicityly based on whether
+    # this file is being sourced or run directly.
+    if ! ( [[ "$function_name" =~ ^_(.*)    ]] || \
+           [[ "$function_name" == "desc"    ]] || \
+           [[ "$function_name" == "debug"   ]] || \
+           [[ "$function_name" == "die"     ]] || \
+           [[ "$function_name" == "init"    ]] || \
+           [[ "$function_name" == "version" ]]
     ); then
       defined_commands+=("$function_name")
     fi
   done
+
+  # If not sourced, add init() and version() back to command list.
+  if ! _is_sourced; then
+    defined_commands+=("init" "version")
+  fi
 
   _debug printf \
     "commands() \$defined_commands:\n%s\n" \
