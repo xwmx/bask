@@ -23,7 +23,7 @@ Some basic features available automatically:
 
 To generate a new "`bask` extension script, use
 
-    bask init <program name>
+    bask init <script name>
 
 This generates a script that sources the `bask` command. You can add
 bash functions in this script and they will be automatically set as
