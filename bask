@@ -723,7 +723,7 @@ _generate_baskfile() {
   else
     printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
     printf "\
-# run this task with: $ %s hello
+# run this command with: $ %s hello
 desc hello <<EOM
 Usage:
   %s hello
@@ -752,7 +752,7 @@ _generate_bask_script() {
 
 source \"\$(which %s)\"
 
-# run this task with: $ %s hi
+# run this command with: $ %s hi
 desc hi <<EOM
 Usage:
   %s hi
