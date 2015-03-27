@@ -339,6 +339,16 @@ _this_basename=$(basename "$BASH_SOURCE")
 
 _debug printf "\$_this_basename: %s\n" "$_this_basename"
 
+# _is_sourced()
+#
+# Determine whether the base program is being run or whether this file is being
+# sourced by a dependent script.
+_is_sourced() {
+  [[ ! "$_me" == "$_this_basename" ]]
+}
+
+_debug printf "_is_sourced(): %s\n" "$(_is_sourced && echo "yes" || echo "no")"
+
 # $_caller_directory
 #
 # Set to the current directory that the program is called from.
@@ -858,8 +868,8 @@ example() {
 # Run Program
 ###############################################################################
 
-# If the current program is this file, rather than another script sourcing this
-# file call the _main function now that everything has been defined.
-if [[ "$_me" == "$_this_basename" ]]; then
+# Call the _main function now that everything has been defined unless this file
+# is sourced by a dependent script.
+if ! _is_sourced; then
   _main
 fi
