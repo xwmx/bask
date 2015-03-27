@@ -747,10 +747,12 @@ _generate_bask_script() {
     printf ">> Creating new bask script: %s\n" "$1"
     printf "\
 #!/usr/bin/env bash
-#
+#########################################################################
 # %s - a %s extension script
 #
-# Add this script and %s to your \$PATH, then run \`%s help\` for usage info.
+# Add this script and %s to your \$PATH. For usage information, run:
+# %s help
+#########################################################################
 
 source \"\$(which %s)\"
 
