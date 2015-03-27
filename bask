@@ -747,10 +747,13 @@ _generate_bask_script() {
     printf ">> Creating new bask script: %s\n" "$1"
     printf "\
 #!/usr/bin/env bash
+#
+# %s - a %s extension script
+#
+# Add this script and %s to your \$PATH, then run \`%s help\` for usage info.
 
 source \"\$(which %s)\"
 
-# run this command with: $ %s hi
 desc hi <<EOM
 Usage:
   %s hi
@@ -763,8 +766,11 @@ hi() {
 }
 
 _main
-" "$_me" \
+" "$_script_basename" \
+  "$_me" \
+  "$_me" \
   "$_script_basename" \
+  "$_me" \
   "$_script_basename" \
   "$_script_basename" >> "$1"
     chmod +x "$1"
