@@ -21,7 +21,8 @@ Some basic features available automatically:
 
 ## Usage
 
-To generate a new "`bask` extension script, use
+To generate a new "`bask` extension script", meaning a script that
+inherits the `bask` foundation, use the following command:
 
     bask init <script name>
 
