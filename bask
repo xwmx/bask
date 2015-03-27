@@ -639,9 +639,7 @@ EOM
 _help_header() {
 if _is_sourced; then
   cat <<EOM
-\`$_me\`, a $_this_basename script.
-
-$_this_basename version: $_VERSION
+$_me - a $_this_basename extension script
 EOM
 else
   cat <<EOM
