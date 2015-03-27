@@ -354,6 +354,8 @@ _debug printf "_is_sourced(): %s\n" "$(_is_sourced && echo "yes" || echo "no")"
 # Set to the current directory that the program is called from.
 _caller_directory="$PWD"
 
+_debug printf "\$_caller_directory: %s\n" "$_caller_directory"
+
 ###############################################################################
 # Load Commands
 ###############################################################################
