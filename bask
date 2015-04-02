@@ -424,7 +424,8 @@ _load_commands() {
   do
     # Each element has the format `declare -f function_name`, so set the name
     # to only the 'function_name' part of the string.
-    local function_name=$(printf "%s" "$c" | awk '{ print $3 }')
+    local function_name
+    function_name=$(printf "%s" "$c" | awk '{ print $3 }')
 
     _debug printf "_load_commands() \$function_name: %s\n" "$function_name"
 
@@ -529,7 +530,8 @@ _contains() {
 _join() {
   local separator="$1"
   local target_array=(${@:2})
-  local dirty="$(printf "${separator}%s"  "${target_array[@]}")"
+  local dirty
+  dirty="$(printf "${separator}%s"  "${target_array[@]}")"
   local clean="${dirty:${#separator}}"
   printf "%s" "${clean}"
 }
@@ -743,7 +745,8 @@ _generate_bask_script() {
     printf ">> %s already exists\n" "$1"
     exit 0
   else
-    local _script_basename="$(basename "$1")"
+    local _script_basename
+    _script_basename="$(basename "$1")"
     printf ">> Creating new bask script: %s\n" "$1"
     printf "\
 #!/usr/bin/env bash
