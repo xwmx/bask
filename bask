@@ -554,6 +554,27 @@ _command_argv_includes() {
 # desc
 ###############################################################################
 
+# _escape_function_name()
+#
+# Usage:
+#   _escape_function_name "some-function:name"
+#
+# Replace ":" and "-" with "__COLON__" and "__HYPHEN__" in function names in
+# order to conform to Bash identifier restrictions.
+#
+# Bash allows ":" and "-" in function names, but they are not allowed in
+# identifiers for variables. In order to store the description in a variable
+# that matches the function name, this function escapes the function name in
+# order to make it suitable for use in a variable identifier.
+_escape_function_name() {
+  local escaped_colons
+  local escaped_hyphens
+  escaped_colons="$(echo "$1" | sed 's/:/__COLON__/g')"
+  escaped_hyphens="$(echo "$escaped_colons" | sed 's/-/__HYPHEN__/g')"
+
+  printf "%s" "$escaped_hyphens"
+}
+
 # desc()
 #
 # Usage:
@@ -582,14 +603,24 @@ _command_argv_includes() {
 desc() {
   set +e
   [[ -z $1 ]] && _die printf "desc: No command name specified.\n"
+
+  local raw_function_name
+  local escaped_function_name
+  raw_function_name="$1"
+  escaped_function_name="$(_escape_function_name "$raw_function_name")"
+
   if [[ -n ${2:-} ]]; then
-    read -d '' "_desc_$1" <<EOM
+    read -d '' "_desc_$escaped_function_name" <<EOM
 $2
 EOM
-    _debug printf "desc() set with argument: _desc_%s\n" "$1"
+    _debug printf \
+      "desc() set with argument: _desc_%s\n" \
+      "$escaped_function_name"
   else
-    read -d '' "_desc_$1"
-    _debug printf "desc() set with pipe: _desc_%s\n" "$1"
+    read -d '' "_desc_$escaped_function_name"
+    _debug printf \
+      "desc() set with pipe: _desc_%s\n" \
+      "$escaped_function_name"
   fi
   set -e
 }
@@ -602,11 +633,16 @@ EOM
 # Prints the description for a given command, provided the description has been
 # set using the desc() function.
 _print_desc() {
-  local var="_desc_$1"
+  local raw_function_name
+  local escaped_function_name
+  raw_function_name="$1"
+  escaped_function_name="$(_escape_function_name "$raw_function_name")"
+
+  local var="_desc_$escaped_function_name"
   if [[ -n ${!var:-} ]]; then
     printf "%s\n" "${!var}"
   else
-   printf "No additional information for \`%s\`\n" "$1"
+   printf "No additional information for \`%s\`\n" "$raw_function_name"
   fi
 }
 
