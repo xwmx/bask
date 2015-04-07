@@ -325,12 +325,14 @@ _debug printf "\$command_parameters: %s\n" "${command_parameters[*]:-}"
 # Environment
 ###############################################################################
 
-# $_me
+# $_me / $_ME
 #
 # Set to the program's basename.
 _me=$(basename "$0")
+_ME=$_me
 
 _debug printf "\$_me: %s\n" "$_me"
+_debug printf "\$_ME: %s\n" "$_ME"
 
 # $_this_basename
 #

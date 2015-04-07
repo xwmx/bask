@@ -52,7 +52,7 @@ For usage formatting conventions see:
 
 ```bash
 desc micro <<EOM
-Usage: $_me micro
+Usage: $_ME micro
 EOM
 micro() {
   echo "Hello, World!"
@@ -64,7 +64,7 @@ micro() {
 ```bash
 desc simple <<EOM
 Usage:
-  $_me simple [<name>]
+  $_ME simple [<name>]
 
 Description:
   Print the greeting, "Hello, World!"
@@ -84,7 +84,7 @@ simple() {
 ```bash
 desc complex <<EOM
 Usage:
-  $_me complex [<name>] [--farewell]
+  $_ME complex [<name>] [--farewell]
 
 Options:
   --farewell  Print "Goodbye, World!"
