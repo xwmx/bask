@@ -847,7 +847,7 @@ init() {
 # Micro Example
 # ==============
 #
-# desc micro "Usage: $_me micro"
+# desc micro "Usage: $_ME micro"
 # micro() {
 #   echo "Hello, World!"
 # }
@@ -858,7 +858,7 @@ init() {
 #
 # desc simple <<EOM
 # Usage:
-#   $_me simple [<name>]
+#   $_ME simple [<name>]
 #
 # Description:
 #   Print the greeting, "Hello, World!"
@@ -878,7 +878,7 @@ init() {
 #
 # desc complex <<EOM
 # Usage:
-#   $_me complex [<name>] [--farewell]
+#   $_ME complex [<name>] [--farewell]
 #
 # Options:
 #   --farewell  Print "Goodbye, World!"
