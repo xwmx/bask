@@ -134,3 +134,12 @@ complex() {
   fi
 }
 ```
+
+## Optional Vim Configuration
+
+In order to enable Baskfile syntax highlighting in Vim, add the
+following line to your `.vimrc`.
+
+```VimL
+autocmd BufRead,BufNewFile Baskfile call SetFileTypeSH("bash")
+```
