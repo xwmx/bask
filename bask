@@ -847,9 +847,7 @@ init() {
 # Micro Example
 # ==============
 #
-# desc micro <<EOM
-# Usage: $_me micro
-# EOM
+# desc micro "Usage: $_me micro"
 # micro() {
 #   echo "Hello, World!"
 # }

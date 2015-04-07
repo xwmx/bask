@@ -81,9 +81,7 @@ For usage formatting conventions see:
 #### Micro Example
 
 ```bash
-desc micro <<EOM
-Usage: $_ME micro
-EOM
+desc micro "Usage: $_ME micro"
 micro() {
   echo "Hello, World!"
 }
