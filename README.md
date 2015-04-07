@@ -60,6 +60,13 @@ the built-in `help` command.
 
 ### Commands
 
+Commands in `bask` are simply Bash functions with optional descriptions.
+Defined functions will be automatically loaded and displayed as part of
+the usage information when the parent command is run. Command-specific
+usage information can be set with the `desc` function, and this usage
+information will be made automatically available to the parent program's
+`help` command.
+
 Example command group structure:
 
 ```bash
