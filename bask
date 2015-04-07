@@ -799,7 +799,7 @@ source \"\$(which %s)\"
 
 desc hi <<EOM
 Usage:
-  %s hi
+  \$_ME hi
 
 Description:
   Print a greeting.
@@ -814,7 +814,6 @@ _main
   "$_me" \
   "$_script_basename" \
   "$_me" \
-  "$_script_basename" \
   "$_script_basename" >> "$1"
     chmod +x "$1"
     exit 0
