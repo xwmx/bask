@@ -456,20 +456,20 @@ _load_commands() {
 }
 
 ###############################################################################
-# Main
+# Init / Main
 ###############################################################################
 
-# _main()
+# _init()
 #
 # Usage:
-#   _main
+#   _init
 #
 # The primary function for starting the program.
 #
 # NOTE: must be called at end of program after all commands have been defined.
-_main() {
-  _debug printf "main(): entering...\n"
-  _debug printf "main() \$cmd (upon entering): %s\n" "$cmd"
+_init() {
+  _debug printf "_init(): entering...\n"
+  _debug printf "_init() \$cmd (upon entering): %s\n" "$cmd"
 
   # If $cmd is blank, then set to help
   if [[ -z $cmd ]]; then
@@ -486,6 +486,16 @@ _main() {
   else
     _die printf "Unknown command: %s\n" "$cmd"
   fi
+}
+
+# _main()
+#
+# Usage:
+#   _main
+#
+# Alias for _init. Used by some existing scripts.
+_main() {
+  _init "$@"
 }
 
 ###############################################################################
@@ -806,7 +816,7 @@ hi() {
   echo \">> Hi from %s!\"
 }
 
-_main
+_init
 " "$_script_basename" \
   "$_ME" \
   "$_ME" \
@@ -908,8 +918,8 @@ new() {
 # Run Program
 ###############################################################################
 
-# Call the _main function now that everything has been defined unless this file
+# Call the _init function now that everything has been defined unless this file
 # is sourced by a dependent script.
 if ! _is_sourced; then
-  _main
+  _init
 fi
