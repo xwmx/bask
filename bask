@@ -679,7 +679,7 @@ EOM
 _help_header() {
 if _is_sourced; then
   cat <<EOM
-$_me - a $_this_basename extension script
+$_me - a $_this_basename script
 EOM
 else
   cat <<EOM
@@ -789,7 +789,7 @@ _generate_bask_script() {
     printf "\
 #!/usr/bin/env bash
 #########################################################################
-# %s - a %s extension script
+# %s - a %s script
 #
 # Add this script and %s to your \$PATH. For usage information, run:
 # %s help

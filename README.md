@@ -21,29 +21,13 @@ Some basic features available automatically:
 
 ## Usage
 
-`bask` can be used primarily in two ways: with Baskfiles defining
-functions for the current context, or with extensions scripts that
-source (or, in other words, inherit from) the `bask` program.
+`bask` can be used primarily in two ways: with with scripts that source (or,
+in other words, inherit from) the `bask` program, or with Baskfiles defining
+functions for the current context.
 
-### Baskfiles
+### Bask Scripts
 
-To generate a new "Baskfile", use `bask init` with no arguments:
-
-```bash
-bask init
-```
-
-A Baskfile is simply a file containing bash functions and optional
-descriptions.
-
-When the `bask` program is run, it first looks in the
-current directory for a Baskfile and sources it if one is present. If it
-doesn't file a Baskfile in the current directory, it traverses the
-parent directories, sourcing the first Baskfile it encounters.
-
-### Extension Scripts
-
-To generate a new "`bask` extension script", meaning a script that
+To generate a new `bask` script, meaning a script that
 inherits the `bask` foundation, use add an argument to the `init`
 command specifying the script name:
 
@@ -57,6 +41,24 @@ sub-commands available as arguments to the program. Additionally, you
 can easily document the programs using the built-in `desc` function. The
 help / usage / description information set here is available in the via
 the built-in `help` command.
+
+### Baskfiles
+
+A Baskfile is simply a file containing bash functions and optional
+descriptions that can be run using the `bask` command directly. This can
+be useful for defining task-centric commands within a particular scope
+where a full program would be unnecessary.
+
+To generate a new "Baskfile", use `bask init` with no arguments:
+
+```bash
+bask init
+```
+
+When the `bask` program is run, it first looks in the
+current directory for a Baskfile and sources it if one is present. If it
+doesn't file a Baskfile in the current directory, it traverses the
+parent directories, sourcing the first Baskfile it encounters.
 
 ### Commands
 
