@@ -325,13 +325,11 @@ _debug printf "\$command_parameters: %s\n" "${command_parameters[*]:-}"
 # Environment
 ###############################################################################
 
-# $_me / $_ME
+# $_ME / $_ME
 #
 # Set to the program's basename.
-_me=$(basename "$0")
-_ME=$_me
+_ME=$(basename "$0")
 
-_debug printf "\$_me: %s\n" "$_me"
 _debug printf "\$_ME: %s\n" "$_ME"
 
 # $_this_basename
@@ -346,7 +344,7 @@ _debug printf "\$_this_basename: %s\n" "$_this_basename"
 # Determine whether the base program is being run or whether this file is being
 # sourced by a dependent script.
 _is_sourced() {
-  [[ ! "$_me" == "$_this_basename" ]]
+  [[ ! "$_ME" == "$_this_basename" ]]
 }
 
 _debug printf "_is_sourced(): %s\n" "$(_is_sourced && echo "yes" || echo "no")"
@@ -656,7 +654,7 @@ _print_desc() {
 
 desc version <<EOM
 Usage:
-  $_me ( version | --version )
+  $_ME ( version | --version )
 
 Description:
   Display the current program version.
@@ -671,15 +669,15 @@ version() {
 
 desc help <<EOM
 Usage:
-  $_me help [<command>]
+  $_ME help [<command>]
 
 Description:
-  Display help information for $_me or a specified command.
+  Display help information for $_ME or a specified command.
 EOM
 _help_header() {
 if _is_sourced; then
   cat <<EOM
-$_me - a $_this_basename script
+$_ME - a $_this_basename script
 EOM
 else
   cat <<EOM
@@ -705,16 +703,16 @@ help() {
 $(_help_header)
 
 Usage:
-  $_me <command> [--command-options] [<arguments>]
-  $_me -h | --help
-  $_me --version
+  $_ME <command> [--command-options] [<arguments>]
+  $_ME -h | --help
+  $_ME --version
 
 Options:
   -h --help  Display this help information.
   --version  Display version information.
 
 Help:
-  $_me help [<command>]
+  $_ME help [<command>]
 
 $(commands)
 EOM
@@ -727,7 +725,7 @@ EOM
 
 desc commands <<EOM
 Usage:
-  $_me commands [--raw]
+  $_ME commands [--raw]
 
 Options:
   --raw  Display the command list without formatting.
@@ -748,11 +746,11 @@ commands() {
 
 desc init <<EOM
 Usage:
-  $_me init [program]
+  $_ME init [program]
 
 Description:
   Create a Baskfile in the current directory. If a program name is provided,
-  generate a $_me-dependent program with the provided name.
+  generate a $_ME-dependent program with the provided name.
 EOM
 _generate_baskfile() {
   if [[ -f "Baskfile" ]]; then
@@ -772,9 +770,9 @@ EOM
 hello() {
   echo \">> Hello from %s!\"
 }
-" "$_me" \
-  "$_me" \
-  "$_me" >> "Baskfile"
+" "$_ME" \
+  "$_ME" \
+  "$_ME" >> "Baskfile"
     exit 0
   fi
 }
@@ -810,10 +808,10 @@ hi() {
 
 _main
 " "$_script_basename" \
-  "$_me" \
-  "$_me" \
+  "$_ME" \
+  "$_ME" \
   "$_script_basename" \
-  "$_me" \
+  "$_ME" \
   "$_script_basename" >> "$1"
     chmod +x "$1"
     exit 0
