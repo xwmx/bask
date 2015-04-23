@@ -80,7 +80,9 @@ For usage formatting conventions see:
 - http://docopt.org/
 - http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
 
-#### Micro Example
+#### Example Command Groups
+
+##### Micro Example
 
 ```bash
 desc micro "Usage: $_ME micro"
@@ -89,7 +91,7 @@ micro() {
 }
 ```
 
-#### Simple Example
+##### Simple Example
 
 ```bash
 desc simple <<EOM
@@ -109,7 +111,7 @@ simple() {
 }
 ```
 
-#### Complex Example
+##### Complex Example
 
 ```bash
 desc complex <<EOM
@@ -150,3 +152,4 @@ following line to your `.vimrc`.
 ```VimL
 autocmd BufRead,BufNewFile Baskfile call SetFileTypeSH("bash")
 ```
+
