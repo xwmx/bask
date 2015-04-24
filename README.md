@@ -28,11 +28,11 @@ functions for the current context.
 ### Bask Scripts
 
 To generate a new `bask` script, meaning a script that
-inherits the `bask` foundation, use add an argument to the `init`
+inherits the `bask` foundation, use add an argument to the `new`
 command specifying the script name:
 
 ```bash
-bask init <script name>
+bask new <script name>
 ```
 
 This generates a script that sources the `bask` command. You can add
@@ -49,10 +49,10 @@ descriptions that can be run using the `bask` command directly. This can
 be useful for defining task-centric commands within a particular scope
 where a full program would be unnecessary.
 
-To generate a new "Baskfile", use `bask init` with no arguments:
+To generate a new "Baskfile", use `bask new` with no arguments:
 
 ```bash
-bask init
+bask new
 ```
 
 When the `bask` program is run, it first looks in the
