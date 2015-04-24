@@ -438,16 +438,16 @@ _load_commands() {
            [[ "$function_name" == "desc"    ]] || \
            [[ "$function_name" == "debug"   ]] || \
            [[ "$function_name" == "die"     ]] || \
-           [[ "$function_name" == "init"    ]] || \
+           [[ "$function_name" == "new"     ]] || \
            [[ "$function_name" == "version" ]]
     ); then
       defined_commands+=("$function_name")
     fi
   done
 
-  # If not sourced, add init() and version() back to command list.
+  # If not sourced, add new() and version() back to command list.
   if ! _is_sourced; then
-    defined_commands+=("init" "version")
+    defined_commands+=("new" "version")
   fi
 
   _debug printf \
@@ -742,11 +742,11 @@ commands() {
   fi
 }
 
-# init ########################################################################
+# new #########################################################################
 
-desc init <<EOM
+desc new <<EOM
 Usage:
-  $_ME init [program]
+  $_ME new [program]
 
 Description:
   Create a Baskfile in the current directory. If a program name is provided,
@@ -817,8 +817,8 @@ _main
     exit 0
   fi
 }
-init() {
-  _debug printf "init() \$PWD: %s\n" "${_caller_directory}"
+new() {
+  _debug printf "new() \$PWD: %s\n" "${_caller_directory}"
 
   if [[ -n "${1:-}" ]]; then
     _generate_bask_script "$1"
