@@ -560,6 +560,26 @@ _command_argv_includes() {
   _contains "$1" "${COMMAND_ARGV[*]}"
 }
 
+# _blank()
+#
+# Takes an argument and returns true if it is blank.
+#
+# Usage:
+#   _blank "$an_argument
+_blank() {
+  [[ -z "${1:-}" ]]
+}
+
+# _prsent()
+#
+# Takes an argument and returns true if it is present.
+#
+# Usage:
+#   _present "$an_argument
+_present() {
+  [[ -n "${1:-}" ]]
+}
+
 ###############################################################################
 # desc
 ###############################################################################
