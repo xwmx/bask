@@ -727,11 +727,21 @@ Version: $_VERSION
 EOM
 fi
 }
-help() {
-  if [[ ${#COMMAND_ARGV[@]} = 1 ]]; then
-    cat <<EOM
-$(_help_header)
+_help_usage() {
+if _is_sourced; then
+  cat <<EOM
+Usage:
+  $_ME <command> [--command-options] [<arguments>]
+  $_ME -h | --help
 
+Options:
+  -h --help  Display this help information.
+
+Help:
+  $_ME help [<command>]
+EOM
+else
+  cat <<EOM
 Usage:
   $_ME <command> [--command-options] [<arguments>]
   $_ME -h | --help
@@ -743,6 +753,16 @@ Options:
 
 Help:
   $_ME help [<command>]
+EOM
+fi
+
+}
+help() {
+  if [[ ${#COMMAND_ARGV[@]} = 1 ]]; then
+    cat <<EOM
+$(_help_header)
+
+$(_help_usage)
 
 $(commands)
 EOM
