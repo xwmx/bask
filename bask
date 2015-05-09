@@ -613,11 +613,14 @@ _present() {
 # identifiers for variables. In order to store the description in a variable
 # that matches the function name, this function escapes the function name in
 # order to make it suitable for use in a variable identifier.
+#
+# Uses built-in substring replacement:
+# http://www.tldp.org/LDP/abs/html/parameter-substitution.html#EXPREPL1
 _escape_function_name() {
   local escaped_colons
   local escaped_hyphens
-  escaped_colons="$(echo "$1" | sed 's/:/__COLON__/g')"
-  escaped_hyphens="$(echo "$escaped_colons" | sed 's/-/__HYPHEN__/g')"
+  escaped_colons="${1//:/__COLON__}"
+  escaped_hyphens="${escaped_colons//-/__HYPHEN__}"
 
   printf "%s" "$escaped_hyphens"
 }
