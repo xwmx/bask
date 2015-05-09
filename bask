@@ -362,11 +362,11 @@ _debug printf "\$_caller_directory: %s\n" "$_caller_directory"
 
 # _search_parents_and_source()
 #
-# Recursively search parent directories for a file with the given basenameand
-# source the first one that's found.
-#
 # Usage:
 #   _search_parents_and_source "filename"
+#
+# Recursively search parent directories for a file with the given basenameand
+# source the first one that's found.
 _search_parents_and_source() {
   local source_file="$1"
   if [[ / == "$PWD" ]]; then
@@ -384,11 +384,11 @@ _search_parents_and_source() {
 
 # _source_baskfile()
 #
-# Source the first Baskfile found in the current directory or any parent
-# directories.
-#
 # Usage:
 #   _source_baskfile
+#
+# Source the first Baskfile found in the current directory or any parent
+# directories.
 _source_baskfile() {
   local source_file="Baskfile"
   if [[ -f "$PWD/${source_file}" ]]; then
@@ -403,10 +403,10 @@ defined_commands=()
 
 # _load_commands()
 #
-# Loads all of the commands sourced in the environment.
-#
 # Usage:
 #   _load_commands
+#
+# Loads all of the commands sourced in the environment.
 _load_commands() {
 
   _debug printf "_load_commands(): entering...\n"
@@ -504,6 +504,9 @@ _main() {
 
 # _function_exists()
 #
+# Usage:
+#   _function_exists "possible_function_name"
+#
 # Takes a potential function name as an argument and returns whether a function
 # exists with that name.
 _function_exists() {
@@ -511,6 +514,9 @@ _function_exists() {
 }
 
 # _command_exists()
+#
+# Usage:
+#   _command_exists "possible_command_name"
 #
 # Takes a potential command name as an argument and returns whether a command
 # exists with that name.
@@ -523,10 +529,10 @@ _command_exists() {
 
 # _contains()
 #
-# Takes an item and a list and determines whether the list contains the item.
-#
 # Usage:
 #   _contains "$item" "${list[*]}"
+#
+# Takes an item and a list and determines whether the list contains the item.
 _contains() {
   local test_list=(${*:2})
   for _test_element in "${test_list[@]:-}"
@@ -542,12 +548,12 @@ _contains() {
 
 # _join()
 #
-# Takes a separator and a list of items, joining that list of items with the
-# separator.
-#
 # Usage:
 #   _join "," a b c
 #   _join "${an_array[@]}"
+#
+# Takes a separator and a list of items, joining that list of items with the
+# separator.
 _join() {
   local separator="$1"
   local target_array=(${@:2})
@@ -559,34 +565,34 @@ _join() {
 
 # _command_argv_includes()
 #
+# Usage:
+#   _command_argv_includes "an_argument"
+#
 # Takes a possible command argument and determines whether it is included in
 # the command argument list.
 #
 # This is a shortcut for simple cases where a command wants to check for the
 # presence of options quickly without parsing the options again.
-#
-# Usage:
-#   _command_argv_includes "an_argument"
 _command_argv_includes() {
   _contains "$1" "${COMMAND_ARGV[*]}"
 }
 
 # _blank()
 #
-# Takes an argument and returns true if it is blank.
-#
 # Usage:
-#   _blank "$an_argument
+#   _blank "$an_argument"
+#
+# Takes an argument and returns true if it is blank.
 _blank() {
   [[ -z "${1:-}" ]]
 }
 
-# _prsent()
-#
-# Takes an argument and returns true if it is present.
+# _present()
 #
 # Usage:
-#   _present "$an_argument
+#   _present "$an_argument"
+#
+# Takes an argument and returns true if it is present.
 _present() {
   [[ -n "${1:-}" ]]
 }
