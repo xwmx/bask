@@ -398,8 +398,8 @@ _source_baskfile() {
   fi
 }
 
-# Initialize defined_commands array.
-defined_commands=()
+# Initialize $DEFINED_COMMANDS array.
+DEFINED_COMMANDS=()
 
 # _load_commands()
 #
@@ -429,7 +429,7 @@ _load_commands() {
 
     _debug printf "_load_commands() \$function_name: %s\n" "$function_name"
 
-    # Add the function name to the $defined_commands array unless it starts
+    # Add the function name to the $DEFINED_COMMANDS array unless it starts
     # with an underscore or is one of the desc(), debug(), or die() functions,
     # since these are treated as having 'private' visibility. Also exclude
     # init() and version(), which will be readded explicityly based on whether
@@ -441,18 +441,18 @@ _load_commands() {
            [[ "$function_name" == "new"     ]] || \
            [[ "$function_name" == "version" ]]
     ); then
-      defined_commands+=("$function_name")
+      DEFINED_COMMANDS+=("$function_name")
     fi
   done
 
   # If not sourced, add new() and version() back to command list.
   if ! _is_sourced; then
-    defined_commands+=("new" "version")
+    DEFINED_COMMANDS+=("new" "version")
   fi
 
   _debug printf \
-    "commands() \$defined_commands:\n%s\n" \
-    "${defined_commands[*]:-}"
+    "commands() \$DEFINED_COMMANDS:\n%s\n" \
+    "${DEFINED_COMMANDS[*]:-}"
 }
 
 ###############################################################################
@@ -480,7 +480,7 @@ _init() {
   _load_commands
 
   # If the command is defined, run it, otherwise return an error.
-  if _contains "$_CMD" "${defined_commands[*]:-}"; then
+  if _contains "$_CMD" "${DEFINED_COMMANDS[*]:-}"; then
     # Pass all comment arguments to the program except for the first ($0).
     $_CMD "${COMMAND_PARAMETERS[@]:-}"
   else
@@ -807,10 +807,10 @@ Description:
 EOM
 commands() {
   if _command_argv_includes "--raw"; then
-    printf "%s\n" "${defined_commands[@]}"
+    printf "%s\n" "${DEFINED_COMMANDS[@]}"
   else
     printf "Available commands:\n"
-    printf "  %s\n" "${defined_commands[@]}"
+    printf "  %s\n" "${DEFINED_COMMANDS[@]}"
   fi
 }
 
