@@ -301,7 +301,7 @@ while [ $# -gt 0 ]; do
       ;;
     *)
       # The first non-option argument is assumed to be the command name.
-      # All subsequent arguments are added to $command_arguments.
+      # All subsequent arguments are added to $COMMAND_ARGV
       if [[ -n $cmd ]]; then
         COMMAND_ARGV+=("$opt")
       else
