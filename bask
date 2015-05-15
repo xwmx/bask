@@ -703,7 +703,7 @@ _print_desc() {
 
 # Version #####################################################################
 
-desc version <<EOM
+desc "version" <<EOM
 Usage:
   $_ME ( version | --version )
 
@@ -718,7 +718,7 @@ version() {
 
 # Help ########################################################################
 
-desc help <<EOM
+desc "help" <<EOM
 Usage:
   $_ME help [<command>]
 
@@ -795,7 +795,7 @@ EOM
 
 # Command List ################################################################
 
-desc commands <<EOM
+desc "commands" <<EOM
 Usage:
   $_ME commands [--raw]
 
@@ -816,7 +816,7 @@ commands() {
 
 # new #########################################################################
 
-desc new <<EOM
+desc "new" <<EOM
 Usage:
   $_ME new [program]
 
@@ -832,7 +832,7 @@ _generate_baskfile() {
     printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
     printf "\
 # run this command with: $ %s hello
-desc hello <<EOM
+desc \"hello\" <<EOM
 Usage:
   %s hello
 
@@ -867,7 +867,7 @@ _generate_bask_script() {
 
 source \"\$(which %s)\"
 
-desc hi <<EOM
+desc \"hi\" <<EOM
 Usage:
   \$_ME hi
 
@@ -917,7 +917,7 @@ new() {
 # Micro Example
 # ==============
 #
-# desc micro "Usage: $_ME micro"
+# desc "micro" "Usage: $_ME micro"
 # micro() {
 #   echo "Hello, World!"
 # }
@@ -926,7 +926,7 @@ new() {
 # Simple Example
 # ==============
 #
-# desc simple <<EOM
+# desc "simple" <<EOM
 # Usage:
 #   $_ME simple [<name>]
 #
@@ -946,7 +946,7 @@ new() {
 # Complex Example
 # ===============
 #
-# desc complex <<EOM
+# desc "complex" <<EOM
 # Usage:
 #   $_ME complex [<name>] [--farewell]
 #
