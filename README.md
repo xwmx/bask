@@ -128,7 +128,7 @@ complex() {
   local greeting="Hello"
   local arguments=()
 
-  for arg in "${COMMAND_ARGV[@]:-}"; do
+  for arg in "${_COMMAND_ARGV[@]:-}"; do
     case $arg in
     --farewell) greeting="Goodbye";;
     -*) _die printf "Unexpected option: %s\n" "$arg";;
