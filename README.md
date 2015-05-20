@@ -1,8 +1,6 @@
 # bask
 
-An experimental framework for command-centric Bash scripts.
-
-Note: this is a work in progress and everything might change.
+A mini-framework for command-centric Bash scripts.
 
 ## Features
 
