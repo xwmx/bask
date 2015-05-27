@@ -858,12 +858,17 @@ _generate_bask_script() {
     printf ">> Creating new bask script: %s\n" "$1"
     printf "\
 #!/usr/bin/env bash
-#########################################################################
+###############################################################################
 # %s - a %s script
 #
-# Add this script and %s to your \$PATH. For usage information, run:
-# %s help
-#########################################################################
+# Get %s:
+#   https://github.com/alphabetum/%s
+#
+# Add this script and the %s program to your \$PATH.
+#
+# For usage information, run:
+#   %s help
+###############################################################################
 
 source \"\$(which %s)\"
 
@@ -880,6 +885,8 @@ hi() {
 
 _init
 " "$_script_basename" \
+  "$_ME" \
+  "$_ME" \
   "$_ME" \
   "$_ME" \
   "$_script_basename" \
