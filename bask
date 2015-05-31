@@ -400,6 +400,15 @@ _source_baskfile() {
 
 # Initialize $_DEFINED_COMMANDS array.
 _DEFINED_COMMANDS=()
+# Initialize $_BUILTIN_COMMANDS array with list of default commands.
+_BUILTIN_COMMANDS=(
+  "commands"
+  "help"
+  "new"
+  "version"
+)
+# Initialize the $_LOCAL_COMMANDS array.
+_LOCAL_COMMANDS=()
 
 # _load_commands()
 #
@@ -439,6 +448,9 @@ _load_commands() {
     # since these are treated as having 'private' visibility. Also exclude
     # init() and version(), which will be readded explicityly based on whether
     # this file is being sourced or run directly.
+    #
+    # Secondly, add the function name to the $_LOCAL_COMMANDS array unless the
+    # command name exists within the $_BUILTIN_COMMANDS array.
     if ! ( [[ "$function_name" =~ ^_(.*)    ]] || \
            [[ "$function_name" == "desc"    ]] || \
            [[ "$function_name" == "debug"   ]] || \
@@ -447,6 +459,10 @@ _load_commands() {
            [[ "$function_name" == "version" ]]
     ); then
       _DEFINED_COMMANDS+=("$function_name")
+
+      if ! _contains "$function_name" "${_BUILTIN_COMMANDS[@]}"; then
+        _LOCAL_COMMANDS+=("$function_name")
+      fi
     fi
   done
 
@@ -458,6 +474,12 @@ _load_commands() {
   _debug printf \
     "commands() \$_DEFINED_COMMANDS:\n%s\n" \
     "${_DEFINED_COMMANDS[*]:-}"
+  _debug printf \
+    "commands() \$_BUILTIN_COMMANDS:\n%s\n" \
+    "${_BUILTIN_COMMANDS[*]:-}"
+  _debug printf \
+    "commands() \$_LOCAL_COMMANDS:\n%s\n" \
+    "${_LOCAL_COMMANDS[*]:-}"
 }
 
 ###############################################################################
@@ -791,7 +813,7 @@ $(_print_desc "HELP_HEADER")
 
 $(_help_usage)
 
-$(commands)
+$(commands --grouped)
 EOM
   else
     _print_desc "$1"
@@ -802,10 +824,12 @@ EOM
 
 desc "commands" <<EOM
 Usage:
-  $_ME commands [--raw]
+  $_ME commands [--raw] [--grouped]
 
 Options:
-  --raw  Display the command list without formatting.
+  --raw      Display the command list without formatting.
+  --grouped  Display the list of commands with default and locally defined
+             commands in labeled groups.
 
 Description:
   Display the list of available commands.
@@ -813,6 +837,26 @@ EOM
 commands() {
   if _command_argv_includes "--raw"; then
     printf "%s\n" "${_DEFINED_COMMANDS[@]}"
+  # Check for the '--grouped' flag using the first argument position
+  # rather than `_command_argv_includes` because 1) it's superseded by
+  # '--raw', anyway, and 2) it is called internally within the program, which
+  # doesn't then populate the `$_COMMAND_ARGV` array again.
+  elif [[ "${1}" == "--grouped" ]]; then
+    # Label the non-default command group differently depending on whether
+    # this is a program script or a set of commands defined in a Baskfile.
+    local _defined_command_group_label
+    if _is_sourced; then
+      _defined_command_group_label="Program"
+    else
+      _defined_command_group_label="Local"
+    fi
+    printf "Default commands:\n"
+    printf "  %s\n" "${_BUILTIN_COMMANDS[@]}"
+    # Only display local command section when defined tasks are available.
+    if [[ -n "${_LOCAL_COMMANDS[@]:-}" ]]; then
+      printf "%s Commands:\n" "$_defined_command_group_label"
+      printf "  %s\n" "${_LOCAL_COMMANDS[@]:-}"
+    fi
   else
     printf "Available commands:\n"
     printf "  %s\n" "${_DEFINED_COMMANDS[@]}"
