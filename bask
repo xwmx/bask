@@ -824,7 +824,7 @@ EOM
 
 desc "commands" <<EOM
 Usage:
-  $_ME commands [--raw] [--grouped]
+  $_ME commands [--raw|--grouped]
 
 Options:
   --raw      Display the command list without formatting.
