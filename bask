@@ -822,7 +822,32 @@ EOM
 
 # Command List ################################################################
 
-desc "commands" <<EOM
+# `commands` behaves differently depending on whether this program is sourced
+# by a dependent script or whether it's being run directly with commands
+# defined in a Baskfile. Since the command list for a dependent script is
+# more limited and only includes commands relevant to that script itself, the
+# '--group' option is not included.
+if _is_sourced; then
+  desc "commands" <<EOM
+Usage:
+  $_ME commands --raw
+
+Options:
+  --raw      Display the command list without formatting.
+
+Description:
+  Display the list of available commands.
+EOM
+  commands() {
+    if _command_argv_includes "--raw"; then
+      printf "%s\n" "${_DEFINED_COMMANDS[@]}"
+    else
+      printf "Available commands:\n"
+      printf "  %s\n" "${_DEFINED_COMMANDS[@]}"
+    fi
+  }
+else
+  desc "commands" <<EOM
 Usage:
   $_ME commands [--raw|--grouped]
 
@@ -834,34 +859,35 @@ Options:
 Description:
   Display the list of available commands.
 EOM
-commands() {
-  if _command_argv_includes "--raw"; then
-    printf "%s\n" "${_DEFINED_COMMANDS[@]}"
-  # Check for the '--grouped' flag using the first argument position
-  # rather than `_command_argv_includes` because 1) it's superseded by
-  # '--raw', anyway, and 2) it is called internally within the program, which
-  # doesn't then populate the `$_COMMAND_ARGV` array again.
-  elif [[ "${1}" == "--grouped" ]]; then
-    # Label the non-default command group differently depending on whether
-    # this is a program script or a set of commands defined in a Baskfile.
-    local _defined_command_group_label
-    if _is_sourced; then
-      _defined_command_group_label="Program"
+  commands() {
+    if _command_argv_includes "--raw"; then
+      printf "%s\n" "${_DEFINED_COMMANDS[@]}"
+    # Check for the '--grouped' flag using the first argument position
+    # rather than `_command_argv_includes` because 1) it's superseded by
+    # '--raw', anyway, and 2) it is called internally within the program, which
+    # doesn't then populate the `$_COMMAND_ARGV` array again.
+    elif [[ "${1}" == "--grouped" ]]; then
+      # Label the non-default command group differently depending on whether
+      # this is a program script or a set of commands defined in a Baskfile.
+      local _defined_command_group_label
+      if _is_sourced; then
+        _defined_command_group_label="Program"
+      else
+        _defined_command_group_label="Local"
+      fi
+      printf "Default commands:\n"
+      printf "  %s\n" "${_BUILTIN_COMMANDS[@]}"
+      # Only display local command section when defined tasks are available.
+      if [[ -n "${_LOCAL_COMMANDS[@]:-}" ]]; then
+        printf "%s Commands:\n" "$_defined_command_group_label"
+        printf "  %s\n" "${_LOCAL_COMMANDS[@]:-}"
+      fi
     else
-      _defined_command_group_label="Local"
+      printf "Available commands:\n"
+      printf "  %s\n" "${_DEFINED_COMMANDS[@]}"
     fi
-    printf "Default commands:\n"
-    printf "  %s\n" "${_BUILTIN_COMMANDS[@]}"
-    # Only display local command section when defined tasks are available.
-    if [[ -n "${_LOCAL_COMMANDS[@]:-}" ]]; then
-      printf "%s Commands:\n" "$_defined_command_group_label"
-      printf "  %s\n" "${_LOCAL_COMMANDS[@]:-}"
-    fi
-  else
-    printf "Available commands:\n"
-    printf "  %s\n" "${_DEFINED_COMMANDS[@]}"
-  fi
-}
+  }
+fi
 
 # new #########################################################################
 
