@@ -134,7 +134,8 @@ Description:
   Print the greeting, "Hello, World!"
 EOM
 simple() {
-  if [[ -n "${1:-}" ]]; then
+  if [[ -n "${1:-}" ]]
+  then
     local name="$1"
   else
     local name="World"
@@ -160,7 +161,8 @@ complex() {
   local greeting="Hello"
   local arguments=()
 
-  for arg in "${_COMMAND_ARGV[@]:-}"; do
+  for arg in "${_COMMAND_ARGV[@]:-}"
+  do
     case $arg in
     --farewell) greeting="Goodbye";;
     -*) _die printf "Unexpected option: %s\n" "$arg";;
@@ -168,7 +170,8 @@ complex() {
     esac
   done
   local name=${arguments[1]:-}
-  if [[ -n "$name" ]]; then
+  if [[ -n "$name" ]]
+  then
     printf "%s, %s!\n" "$greeting" "$name"
   else
     printf "%s, World!\n" "$greeting"

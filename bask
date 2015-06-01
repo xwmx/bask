@@ -142,7 +142,8 @@ DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
 # variable has been set. The command is expected to print a message and
 # should typically be either `echo`, `printf`, or `cat`.
 _debug() {
-  if [[ "${_USE_DEBUG:-"0"}" -eq 1 ]]; then
+  if [[ "${_USE_DEBUG:-"0"}" -eq 1 ]]
+  then
     # Prefix debug message with "bug (U+1F41B)"
     printf "🐛  "
     "$@"
@@ -234,12 +235,14 @@ optstring=h
 # argument to the option, such as wget -qO-)
 unset options
 # while the number of arguments is greater than 0
-while (($#)); do
+while (($#))
+do
   case $1 in
     # if option is of type -ab
     -[!-]?*)
       # loop over each character starting with the second
-      for ((i=1; i<${#1}; i++)); do
+      for ((i=1; i<${#1}; i++))
+      do
         # extract 1 character from position 'i'
         c=${1:i:1}
         # add current char to options
@@ -247,14 +250,17 @@ while (($#)); do
 
         # if option takes a required argument, and it's not the last char
         # make the rest of the string its argument
-        if [[ $optstring = *"$c:"* && ${1:i+1} ]]; then
+        if [[ $optstring = *"$c:"* && ${1:i+1} ]]
+        then
           options+=("${1:i+1}")
           break
         fi
       done
       ;;
     # if option is of type --foo=bar, split on first '='
-    --?*=*) options+=("${1%%=*}" "${1#*=}");;
+    --?*=*)
+      options+=("${1%%=*}" "${1#*=}")
+      ;;
     # end of options, stop breaking them up
     --)
       options+=(--endopts)
@@ -263,7 +269,9 @@ while (($#)); do
       break
       ;;
     # otherwise, nothing special
-    *) options+=("$1");;
+    *)
+      options+=("$1")
+      ;;
   esac
 
   shift
@@ -286,7 +294,8 @@ _COMMAND_ARGV=("$0")
 _CMD=""
 _USE_DEBUG=0
 
-while [ $# -gt 0 ]; do
+while [ $# -gt 0 ]
+do
   opt="$1"
   shift
   case "$opt" in
@@ -302,7 +311,8 @@ while [ $# -gt 0 ]; do
     *)
       # The first non-option argument is assumed to be the command name.
       # All subsequent arguments are added to $_COMMAND_ARGV
-      if [[ -n $_CMD ]]; then
+      if [[ -n $_CMD ]]
+      then
         _COMMAND_ARGV+=("$opt")
       else
         _CMD="$opt"
@@ -369,10 +379,12 @@ _debug printf "\$_caller_directory: %s\n" "$_caller_directory"
 # source the first one that's found.
 _search_parents_and_source() {
   local source_file="$1"
-  if [[ / == "$PWD" ]]; then
+  if [[ / == "$PWD" ]]
+  then
     cd "${_caller_directory}"
     return
-  elif [[ -f "${source_file}" ]]; then
+  elif [[ -f "${source_file}" ]]
+  then
     source "${source_file}"
     cd "${_caller_directory}"
     return
@@ -391,7 +403,8 @@ _search_parents_and_source() {
 # directories.
 _source_baskfile() {
   local source_file="Baskfile"
-  if [[ -f "$PWD/${source_file}" ]]; then
+  if [[ -f "$PWD/${source_file}" ]]
+  then
     source "${source_file}"
   else
     _search_parents_and_source "${source_file}"
@@ -424,7 +437,8 @@ _load_commands() {
   # If this file is not sourced, indicating that commands are not defined in a
   # dependent script, then look for and source the first Baskfile in the
   # parent tree.
-  if ! _is_sourced; then
+  if ! _is_sourced
+  then
     _source_baskfile
   fi
 
@@ -457,17 +471,20 @@ _load_commands() {
            [[ "$function_name" == "die"     ]] || \
            [[ "$function_name" == "new"     ]] || \
            [[ "$function_name" == "version" ]]
-    ); then
+    )
+    then
       _DEFINED_COMMANDS+=("$function_name")
 
-      if ! _contains "$function_name" "${_BUILTIN_COMMANDS[@]}"; then
+      if ! _contains "$function_name" "${_BUILTIN_COMMANDS[@]}"
+      then
         _LOCAL_COMMANDS+=("$function_name")
       fi
     fi
   done
 
   # If not sourced, add new() and version() back to command list.
-  if ! _is_sourced; then
+  if ! _is_sourced
+  then
     _DEFINED_COMMANDS+=("new" "version")
   fi
 
@@ -499,7 +516,8 @@ _init() {
   _debug printf "_init() \$_CMD (upon entering): %s\n" "$_CMD"
 
   # If $_CMD is blank, then set to help
-  if [[ -z $_CMD ]]; then
+  if [[ -z $_CMD ]]
+  then
     _CMD="$DEFAULT_COMMAND"
   fi
 
@@ -507,7 +525,8 @@ _init() {
   _load_commands
 
   # If the command is defined, run it, otherwise return an error.
-  if _contains "$_CMD" "${_DEFINED_COMMANDS[*]:-}"; then
+  if _contains "$_CMD" "${_DEFINED_COMMANDS[*]:-}"
+  then
     # Pass all comment arguments to the program except for the first ($0).
     $_CMD "${_COMMAND_PARAMETERS[@]:-}"
   else
@@ -565,7 +584,8 @@ _contains() {
   for _test_element in "${test_list[@]:-}"
   do
     _debug printf "_contains() \$_test_element: %s\n" "$_test_element"
-    if [[ "$_test_element" == "$1" ]]; then
+    if [[ "$_test_element" == "$1" ]]
+    then
       _debug printf "_contains() match: %s\n" "$1"
       return 0
     fi
@@ -686,7 +706,8 @@ desc() {
   raw_function_name="$1"
   escaped_function_name="$(_escape_function_name "$raw_function_name")"
 
-  if [[ -n ${2:-} ]]; then
+  if [[ -n ${2:-} ]]
+  then
     read -d '' "_desc_$escaped_function_name" <<EOM
 $2
 EOM
@@ -716,7 +737,8 @@ _print_desc() {
   escaped_function_name="$(_escape_function_name "$raw_function_name")"
 
   local var="_desc_$escaped_function_name"
-  if [[ -n ${!var:-} ]]; then
+  if [[ -n ${!var:-} ]]
+  then
     printf "%s\n" "${!var}"
   else
     printf "No additional information for \`%s\`\n" "$raw_function_name"
@@ -753,7 +775,8 @@ Description:
   Display help information for $_ME or a specified command.
 EOM
 _help_header() {
-if _is_sourced; then
+if _is_sourced
+then
   desc "HELP_HEADER" <<EOM
 $_ME - a $_this_basename script
 EOM
@@ -776,7 +799,8 @@ EOM
 fi
 }
 _help_usage() {
-if _is_sourced; then
+if _is_sourced
+then
   cat <<EOM
 Usage:
   $_ME <command> [--command-options] [<arguments>]
@@ -807,7 +831,8 @@ fi
 }
 _help_header
 help() {
-  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; then
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]
+  then
     cat <<EOM
 $(_print_desc "HELP_HEADER")
 
@@ -827,7 +852,8 @@ EOM
 # defined in a Baskfile. Since the command list for a dependent script is
 # more limited and only includes commands relevant to that script itself, the
 # '--group' option is not included.
-if _is_sourced; then
+if _is_sourced
+then
   desc "commands" <<EOM
 Usage:
   $_ME commands --raw
@@ -839,7 +865,8 @@ Description:
   Display the list of available commands.
 EOM
   commands() {
-    if _command_argv_includes "--raw"; then
+    if _command_argv_includes "--raw"
+    then
       printf "%s\n" "${_DEFINED_COMMANDS[@]}"
     else
       printf "Available commands:\n"
@@ -860,17 +887,20 @@ Description:
   Display the list of available commands.
 EOM
   commands() {
-    if _command_argv_includes "--raw"; then
+    if _command_argv_includes "--raw"
+    then
       printf "%s\n" "${_DEFINED_COMMANDS[@]}"
     # Check for the '--grouped' flag using the first argument position
     # rather than `_command_argv_includes` because 1) it's superseded by
     # '--raw', anyway, and 2) it is called internally within the program, which
     # doesn't then populate the `$_COMMAND_ARGV` array again.
-    elif [[ "${1}" == "--grouped" ]]; then
+    elif [[ "${1}" == "--grouped" ]]
+    then
       printf "Default commands:\n"
       printf "  %s\n" "${_BUILTIN_COMMANDS[@]}"
       # Only display local command section when defined tasks are available.
-      if [[ -n "${_LOCAL_COMMANDS[@]:-}" ]]; then
+      if [[ -n "${_LOCAL_COMMANDS[@]:-}" ]]
+      then
         printf "Local Commands:\n"
         printf "  %s\n" "${_LOCAL_COMMANDS[@]:-}"
       fi
@@ -892,7 +922,8 @@ Description:
   generate a $_ME-dependent program with the provided name.
 EOM
 _generate_baskfile() {
-  if [[ -f "Baskfile" ]]; then
+  if [[ -f "Baskfile" ]]
+  then
     printf ">> Baskfile already exists in this location.\n"
     exit 0
   else
@@ -914,7 +945,8 @@ hello() {
   fi
 }
 _generate_bask_script() {
-  if [[ -f "$1" ]]; then
+  if [[ -f "$1" ]]
+  then
     printf ">> %s already exists\n" "$1"
     exit 0
   else
@@ -964,7 +996,8 @@ _init
 new() {
   _debug printf "new() \$PWD: %s\n" "${_caller_directory}"
 
-  if [[ -n "${1:-}" ]]; then
+  if [[ -n "${1:-}" ]]
+  then
     _generate_bask_script "$1"
   else
     _generate_baskfile
@@ -1006,7 +1039,8 @@ new() {
 #   Print the greeting, "Hello, World!"
 # EOM
 # simple() {
-#   if [[ -n "${1:-}" ]]; then
+#   if [[ -n "${1:-}" ]]
+#   then
 #     local name="$1"
 #   else
 #     local name="World"
@@ -1032,7 +1066,8 @@ new() {
 #   local greeting="Hello"
 #   local arguments=()
 #
-#   for arg in "${_COMMAND_ARGV[@]:-}"; do
+#   for arg in "${_COMMAND_ARGV[@]:-}"
+#   do
 #     case $arg in
 #     --farewell) greeting="Goodbye";;
 #     -*) _die printf "Unexpected option: %s\n" "$arg";;
@@ -1040,7 +1075,8 @@ new() {
 #     esac
 #   done
 #   local name=${arguments[1]:-}
-#   if [[ -n "$name" ]]; then
+#   if [[ -n "$name" ]]
+#   then
 #     printf "%s, %s!\n" "$greeting" "$name"
 #   else
 #     printf "%s, World!\n" "$greeting"
@@ -1054,6 +1090,7 @@ new() {
 
 # Call the _init function now that everything has been defined unless this file
 # is sourced by a dependent script.
-if ! _is_sourced; then
+if ! _is_sourced
+then
   _init
 fi
