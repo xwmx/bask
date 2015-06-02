@@ -898,7 +898,6 @@ _generate_baskfile() {
   else
     printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
     printf "\
-# run this command with: $ %s hello
 desc \"hello\" <<EOM
 Usage:
   %s hello
@@ -910,7 +909,6 @@ hello() {
   echo \">> Hello from %s!\"
 }
 " "$_ME" \
-  "$_ME" \
   "$_ME" >> "Baskfile"
     exit 0
   fi
