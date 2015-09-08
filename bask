@@ -922,50 +922,57 @@ _generate_baskfile() {
   then
     printf ">> Baskfile already exists in this location.\n"
     exit 0
-  else
-    printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
-    printf "\
-desc \"hello\" <<EOM
+  fi
+
+  local _content
+  read -d '' _content <<TEMPLATE || true
+desc "hello" <<EOM
 Usage:
-  %s hello
+  $_ME hello
 
 Description:
   Print a greeting.
 EOM
 hello() {
-  echo \">> Hello from %s!\"
+  echo ">> Hello from $_ME!"
 }
-" "$_ME" \
-  "$_ME" >> "Baskfile"
-    exit 0
-  fi
+TEMPLATE
+
+  printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
+  printf "%s\n" "${_content}" >> "Baskfile"
+  exit 0
 }
 _generate_bask_script() {
   if [[ -f "$1" ]]
   then
     printf ">> %s already exists\n" "$1"
     exit 0
-  else
-    local _script_basename
-    _script_basename="$(basename "$1")"
-    printf ">> Creating new bask script: %s\n" "$1"
-    printf "\
+  fi
+
+  local _script_basename
+  _script_basename="$(basename "$1")"
+  _debug printf \
+    "_generate_bask_script() \$_script_basename: %s\n" \
+    "${_script_basename}"
+
+  local _content
+  read -d '' _content <<TEMPLATE || true
 #!/usr/bin/env bash
 ###############################################################################
-# %s - a %s script
+# ${_script_basename} - a ${_ME} script
 #
-# Get %s:
-#   https://github.com/alphabetum/%s
+# Get ${_ME}:
+#   https://github.com/alphabetum/${_ME}
 #
-# Add this script and the %s program to your \$PATH.
+# Add this script and the ${_ME} program to your \$PATH.
 #
 # For usage information, run:
-#   %s help
+#   ${_script_basename} help
 ###############################################################################
 
-source \"\$(which %s)\"
+source "\$(which ${_ME})"
 
-desc \"hi\" <<EOM
+desc "hi" <<EOM
 Usage:
   \$_ME hi
 
@@ -973,21 +980,16 @@ Description:
   Print a greeting.
 EOM
 hi() {
-  echo \">> Hi from %s!\"
+  echo ">> Hi from ${_script_basename}!"
 }
 
 _init
-" "$_script_basename" \
-  "$_ME" \
-  "$_ME" \
-  "$_ME" \
-  "$_ME" \
-  "$_script_basename" \
-  "$_ME" \
-  "$_script_basename" >> "$1"
-    chmod +x "$1"
-    exit 0
-  fi
+TEMPLATE
+
+  printf ">> Creating new bask script: %s\n" "$1"
+  printf "%s\n" "${_content}" >> "$1"
+  chmod +x "$1"
+  exit 0
 }
 new() {
   _debug printf "new() \$PWD: %s\n" "${_caller_directory}"
