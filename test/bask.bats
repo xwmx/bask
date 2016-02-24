@@ -3,12 +3,12 @@
 load test_helper
 
 @test "\`bask\` with no arguments exits with status 0." {
-  run "$_BASK"
-  [ "$status" -eq 0 ]
+  run "${_BASK}"
+  [ "${status}" -eq 0 ]
 }
 
 @test "\`bask\` with no arguments prints default help." {
-  run "$_BASK"
+  run "${_BASK}"
   _expected="\
                  ___         ___         ___
     _____       /  /\       /  /\       /__/|
@@ -22,5 +22,5 @@ load test_helper
    \  \::/     \  \:\       /__/:/     \  \:\\
     \__\/       \__\/       \__\/       \__\/"
   _compare "${_expected}" "$(IFS=$'\n'; echo "${lines[*]:0:11}")"
-  [[ "$(IFS=$'\n'; echo "${lines[*]:0:11}")" == "$_expected" ]]
+  [[ "$(IFS=$'\n'; echo "${lines[*]:0:11}")" == "${_expected}" ]]
 }

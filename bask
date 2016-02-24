@@ -112,9 +112,9 @@ set -o pipefail
 #
 # Supress ShellCheck unused variable warning:
 # shellcheck disable=SC2034
-DEFAULT_IFS="$IFS"
+DEFAULT_IFS="${IFS}"
 SAFER_IFS=$'\n\t'
-IFS="$SAFER_IFS"
+IFS="${SAFER_IFS}"
 
 ###############################################################################
 # Globals
@@ -145,7 +145,7 @@ _debug() {
   then
     # Prefix debug message with "bug (U+1F41B)"
     printf "🐛  "
-    "$@"
+    "${@}"
     printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n"
   fi
 }
@@ -158,7 +158,7 @@ _debug() {
 #
 # This is a shortcut for the _debug() function that simply echos the message.
 debug() {
-  _debug echo "$@"
+  _debug echo "${@}"
 }
 
 ###############################################################################
@@ -176,7 +176,7 @@ debug() {
 _die() {
   # Prefix die message with "cross mark (U+274C)", often displayed as a red x.
   printf "❌  "
-  "$@" 1>&2
+  "${@}" 1>&2
   exit 1
 }
 # die()
@@ -188,7 +188,7 @@ _die() {
 #
 # This is a shortcut for the _die() function that simply echos the message.
 die() {
-  _die echo "$@"
+  _die echo "${@}"
 }
 
 ###############################################################################
@@ -196,7 +196,7 @@ die() {
 ###############################################################################
 
 # Get raw options for any commands that expect them.
-_RAW_OPTIONS="$*"
+_RAW_OPTIONS="${*}"
 
 # Steps:
 #
@@ -234,9 +234,9 @@ optstring=h
 # argument to the option, such as wget -qO-)
 unset options
 # while the number of arguments is greater than 0
-while (($#))
+while ((${#}))
 do
-  case $1 in
+  case ${1} in
     # if option is of type -ab
     -[!-]?*)
       # loop over each character starting with the second
@@ -245,11 +245,11 @@ do
         # extract 1 character from position 'i'
         c=${1:i:1}
         # add current char to options
-        options+=("-$c")
+        options+=("-${c}")
 
         # if option takes a required argument, and it's not the last char
         # make the rest of the string its argument
-        if [[ $optstring = *"$c:"* && ${1:i+1} ]]
+        if [[ ${optstring} = *"${c}:"* && ${1:i+1} ]]
         then
           options+=("${1:i+1}")
           break
@@ -264,12 +264,12 @@ do
     --)
       options+=(--endopts)
       shift
-      options+=("$@")
+      options+=("${@}")
       break
       ;;
     # otherwise, nothing special
     *)
-      options+=("$1")
+      options+=("${1}")
       ;;
   esac
 
@@ -287,17 +287,17 @@ unset options
 # command. This is essentially the same as the program arguments, minus those
 # that have been filtered out in the program option parsing loop. This array
 # is initialized with $0, which is the program's name.
-_COMMAND_ARGV=("$0")
+_COMMAND_ARGV=("${0}")
 # Initialize $_CMD and $_USE_DEBUG, which can continue to be blank depending on
 # what the program needs.
 _CMD=""
 _USE_DEBUG=0
 
-while [ $# -gt 0 ]
+while [ ${#} -gt 0 ]
 do
-  opt="$1"
+  opt="${1}"
   shift
-  case "$opt" in
+  case "${opt}" in
     -h|--help)
       _CMD="help"
       ;;
@@ -310,11 +310,11 @@ do
     *)
       # The first non-option argument is assumed to be the command name.
       # All subsequent arguments are added to $_COMMAND_ARGV
-      if [[ -n $_CMD ]]
+      if [[ -n ${_CMD} ]]
       then
-        _COMMAND_ARGV+=("$opt")
+        _COMMAND_ARGV+=("${opt}")
       else
-        _CMD="$opt"
+        _CMD="${opt}"
       fi
       ;;
   esac
@@ -331,10 +331,10 @@ done
 _COMMAND_PARAMETERS=(${_COMMAND_ARGV[*]})
 unset _COMMAND_PARAMETERS[0]
 
-_debug printf "\$_CMD: %s\n" "$_CMD"
-_debug printf "\$_RAW_OPTIONS (one per line):\n%s\n" "$_RAW_OPTIONS"
-_debug printf "\$_COMMAND_ARGV: %s\n" "${_COMMAND_ARGV[*]}"
-_debug printf "\$_COMMAND_PARAMETERS: %s\n" "${_COMMAND_PARAMETERS[*]:-}"
+_debug printf "\${_CMD}: %s\n" "${_CMD}"
+_debug printf "\${_RAW_OPTIONS} (one per line):\n%s\n" "${_RAW_OPTIONS}"
+_debug printf "\${_COMMAND_ARGV[*]}: %s\n" "${_COMMAND_ARGV[*]}"
+_debug printf "\${_COMMAND_PARAMETERS[*]:-}: %s\n" "${_COMMAND_PARAMETERS[*]:-}"
 
 ###############################################################################
 # Environment
@@ -343,23 +343,23 @@ _debug printf "\$_COMMAND_PARAMETERS: %s\n" "${_COMMAND_PARAMETERS[*]:-}"
 # $_ME / $_ME
 #
 # Set to the program's basename.
-_ME=$(basename "$0")
+_ME=$(basename "${0}")
 
-_debug printf "\$_ME: %s\n" "$_ME"
+_debug printf "\${_ME}: %s\n" "${_ME}"
 
 # $_this_basename
 #
 # Set to this file's basename
-_this_basename=$(basename "$BASH_SOURCE")
+_this_basename=$(basename "${BASH_SOURCE}")
 
-_debug printf "\$_this_basename: %s\n" "$_this_basename"
+_debug printf "\${_this_basename}: %s\n" "${_this_basename}"
 
 # _is_sourced()
 #
 # Determine whether the base program is being run or whether this file is being
 # sourced by a dependent script.
 _is_sourced() {
-  [[ ! "$_ME" == "$_this_basename" ]]
+  [[ ! "${_ME}" == "${_this_basename}" ]]
 }
 
 _debug printf "_is_sourced(): %s\n" "$(_is_sourced && echo "yes" || echo "no")"
@@ -367,9 +367,9 @@ _debug printf "_is_sourced(): %s\n" "$(_is_sourced && echo "yes" || echo "no")"
 # $_caller_directory
 #
 # Set to the current directory that the program is called from.
-_caller_directory="$PWD"
+_caller_directory="${PWD}"
 
-_debug printf "\$_caller_directory: %s\n" "$_caller_directory"
+_debug printf "\${_caller_directory}: %s\n" "${_caller_directory}"
 
 ###############################################################################
 # Load Commands
@@ -383,8 +383,8 @@ _debug printf "\$_caller_directory: %s\n" "$_caller_directory"
 # Recursively search parent directories for a file with the given basenameand
 # source the first one that's found.
 _search_parents_and_source() {
-  local source_file="$1"
-  if [[ / == "$PWD" ]]
+  local source_file="${1}"
+  if [[ / == "${PWD}" ]]
   then
     cd "${_caller_directory}"
     return
@@ -408,7 +408,7 @@ _search_parents_and_source() {
 # directories.
 _source_baskfile() {
   local source_file="Baskfile"
-  if [[ -f "$PWD/${source_file}" ]]
+  if [[ -f "${PWD}/${source_file}" ]]
   then
     source "${source_file}"
   else
@@ -458,9 +458,9 @@ _load_commands() {
     # Each element has the format `declare -f function_name`, so set the name
     # to only the 'function_name' part of the string.
     local function_name
-    function_name=$(printf "%s" "$c" | awk '{ print $3 }')
+    function_name=$(printf "%s" "${c}" | awk '{ print $3 }')
 
-    _debug printf "_load_commands() \$function_name: %s\n" "$function_name"
+    _debug printf "_load_commands() \${function_name}: %s\n" "${function_name}"
 
     # Add the function name to the $_DEFINED_COMMANDS array unless it starts
     # with an underscore or is one of the desc(), debug(), or die() functions,
@@ -470,19 +470,19 @@ _load_commands() {
     #
     # Secondly, add the function name to the $_LOCAL_COMMANDS array unless the
     # command name exists within the $_BUILTIN_COMMANDS array.
-    if ! ( [[ "$function_name" =~ ^_(.*)    ]] || \
-           [[ "$function_name" == "desc"    ]] || \
-           [[ "$function_name" == "debug"   ]] || \
-           [[ "$function_name" == "die"     ]] || \
-           [[ "$function_name" == "new"     ]] || \
-           [[ "$function_name" == "version" ]]
+    if ! ( [[ "${function_name}" =~ ^_(.*)    ]] || \
+           [[ "${function_name}" == "desc"    ]] || \
+           [[ "${function_name}" == "debug"   ]] || \
+           [[ "${function_name}" == "die"     ]] || \
+           [[ "${function_name}" == "new"     ]] || \
+           [[ "${function_name}" == "version" ]]
     )
     then
-      _DEFINED_COMMANDS+=("$function_name")
+      _DEFINED_COMMANDS+=("${function_name}")
 
-      if ! _contains "$function_name" "${_BUILTIN_COMMANDS[@]}"
+      if ! _contains "${function_name}" "${_BUILTIN_COMMANDS[@]}"
       then
-        _LOCAL_COMMANDS+=("$function_name")
+        _LOCAL_COMMANDS+=("${function_name}")
       fi
     fi
   done
@@ -494,13 +494,13 @@ _load_commands() {
   fi
 
   _debug printf \
-    "commands() \$_DEFINED_COMMANDS:\n%s\n" \
+    "commands() \${_DEFINED_COMMANDS}:\n%s\n" \
     "${_DEFINED_COMMANDS[*]:-}"
   _debug printf \
-    "commands() \$_BUILTIN_COMMANDS:\n%s\n" \
+    "commands() \${_BUILTIN_COMMANDS}:\n%s\n" \
     "${_BUILTIN_COMMANDS[*]:-}"
   _debug printf \
-    "commands() \$_LOCAL_COMMANDS:\n%s\n" \
+    "commands() \${_LOCAL_COMMANDS}:\n%s\n" \
     "${_LOCAL_COMMANDS[*]:-}"
 }
 
@@ -518,24 +518,24 @@ _load_commands() {
 # NOTE: must be called at end of program after all commands have been defined.
 _init() {
   _debug printf "_init(): entering...\n"
-  _debug printf "_init() \$_CMD (upon entering): %s\n" "$_CMD"
+  _debug printf "_init() \${_CMD} (upon entering): %s\n" "${_CMD}"
 
   # If $_CMD is blank, then set to help
-  if [[ -z $_CMD ]]
+  if [[ -z "${_CMD}" ]]
   then
-    _CMD="$DEFAULT_COMMAND"
+    _CMD="${DEFAULT_COMMAND}"
   fi
 
   # Load all of the commands.
   _load_commands
 
   # If the command is defined, run it, otherwise return an error.
-  if _contains "$_CMD" "${_DEFINED_COMMANDS[*]:-}"
+  if _contains "${_CMD}" "${_DEFINED_COMMANDS[*]:-}"
   then
     # Pass all comment arguments to the program except for the first ($0).
-    $_CMD "${_COMMAND_PARAMETERS[@]:-}"
+    ${_CMD} "${_COMMAND_PARAMETERS[@]:-}"
   else
-    _die printf "Unknown command: %s\n" "$_CMD"
+    _die printf "Unknown command: %s\n" "${_CMD}"
   fi
 }
 
@@ -546,7 +546,7 @@ _init() {
 #
 # Alias for _init. Used by some existing scripts.
 _main() {
-  _init "$@"
+  _init "${@}"
 }
 
 ###############################################################################
@@ -561,7 +561,7 @@ _main() {
 # Takes a potential function name as an argument and returns whether a function
 # exists with that name.
 _function_exists() {
-  [ "$(type -t "$1")" == 'function' ]
+  [ "$(type -t "${1}")" == 'function' ]
 }
 
 # _command_exists()
@@ -575,7 +575,7 @@ _function_exists() {
 # For information on why `hash` is used here, see:
 # http://stackoverflow.com/a/677212
 _command_exists() {
-  hash "$1" 2>/dev/null
+  hash "${1}" 2>/dev/null
 }
 
 # _contains()
@@ -588,10 +588,10 @@ _contains() {
   local test_list=(${*:2})
   for _test_element in "${test_list[@]:-}"
   do
-    _debug printf "_contains() \$_test_element: %s\n" "$_test_element"
-    if [[ "$_test_element" == "$1" ]]
+    _debug printf "_contains() \${_test_element}: %s\n" "${_test_element}"
+    if [[ "${_test_element}" == "${1}" ]]
     then
-      _debug printf "_contains() match: %s\n" "$1"
+      _debug printf "_contains() match: %s\n" "${1}"
       return 0
     fi
   done
@@ -607,7 +607,7 @@ _contains() {
 # Takes a separator and a list of items, joining that list of items with the
 # separator.
 _join() {
-  local separator="$1"
+  local separator="${1}"
   local target_array=(${@:2})
   local dirty
   dirty="$(printf "${separator}%s"  "${target_array[@]}")"
@@ -626,7 +626,7 @@ _join() {
 # This is a shortcut for simple cases where a command wants to check for the
 # presence of options quickly without parsing the options again.
 _command_argv_includes() {
-  _contains "$1" "${_COMMAND_ARGV[*]}"
+  _contains "${1}" "${_COMMAND_ARGV[*]}"
 }
 
 # _blank()
@@ -698,7 +698,7 @@ _escape_function_name() {
   escaped_colons="${1//:/__COLON__}"
   escaped_hyphens="${escaped_colons//-/__HYPHEN__}"
 
-  printf "%s" "$escaped_hyphens"
+  printf "%s" "${escaped_hyphens}"
 }
 
 # desc()
@@ -728,26 +728,26 @@ _escape_function_name() {
 # escaping backslashes, which is more common.
 desc() {
   set +e
-  [[ -z $1 ]] && _die printf "desc: No command name specified.\n"
+  [[ -z "${1}" ]] && _die printf "desc: No command name specified.\n"
 
   local raw_function_name
   local escaped_function_name
-  raw_function_name="$1"
-  escaped_function_name="$(_escape_function_name "$raw_function_name")"
+  raw_function_name="${1}"
+  escaped_function_name="$(_escape_function_name "${raw_function_name}")"
 
   if [[ -n ${2:-} ]]
   then
-    read -r -d '' "_desc_$escaped_function_name" <<EOM
-$2
+    read -r -d '' "_desc_${escaped_function_name}" <<EOM
+${2}
 EOM
     _debug printf \
       "desc() set with argument: _desc_%s\n" \
-      "$escaped_function_name"
+      "${escaped_function_name}"
   else
-    read -r -d '' "_desc_$escaped_function_name"
+    read -r -d '' "_desc_${escaped_function_name}"
     _debug printf \
       "desc() set with pipe: _desc_%s\n" \
-      "$escaped_function_name"
+      "${escaped_function_name}"
   fi
   set -e
 }
@@ -762,15 +762,15 @@ EOM
 _print_desc() {
   local raw_function_name
   local escaped_function_name
-  raw_function_name="$1"
-  escaped_function_name="$(_escape_function_name "$raw_function_name")"
+  raw_function_name="${1}"
+  escaped_function_name="$(_escape_function_name "${raw_function_name}")"
 
-  local var="_desc_$escaped_function_name"
+  local var="_desc_${escaped_function_name}"
   if [[ -n ${!var:-} ]]
   then
     printf "%s\n" "${!var}"
   else
-    printf "No additional information for \`%s\`\n" "$raw_function_name"
+    printf "No additional information for \`%s\`\n" "${raw_function_name}"
     return 1
   fi
 }
@@ -783,31 +783,31 @@ _print_desc() {
 
 desc "version" <<EOM
 Usage:
-  $_ME ( version | --version )
+  ${_ME} ( version | --version )
 
 Description:
   Display the current program version.
 
-  To save you the trouble, the current version is $_VERSION
+  To save you the trouble, the current version is ${_VERSION}
 EOM
 version() {
-  printf "%s\n" "$_VERSION"
+  printf "%s\n" "${_VERSION}"
 }
 
 # Help ########################################################################
 
 desc "help" <<EOM
 Usage:
-  $_ME help [<command>]
+  ${_ME} help [<command>]
 
 Description:
-  Display help information for $_ME or a specified command.
+  Display help information for ${_ME} or a specified command.
 EOM
 _help_header() {
 if _is_sourced
 then
   desc "HELP_HEADER" <<EOM
-$_ME - a $_this_basename script
+${_ME} - a ${_this_basename} script
 EOM
 else
   desc "HELP_HEADER" <<EOM
@@ -823,7 +823,7 @@ else
    \  \::/     \  \:\       /__/:/     \  \:\\
     \__\/       \__\/       \__\/       \__\/
 
-Version: $_VERSION
+Version: ${_VERSION}
 EOM
 fi
 }
@@ -832,28 +832,28 @@ if _is_sourced
 then
   cat <<EOM
 Usage:
-  $_ME <command> [--command-options] [<arguments>]
-  $_ME -h | --help
+  ${_ME} <command> [--command-options] [<arguments>]
+  ${_ME} -h | --help
 
 Options:
   -h --help  Display this help information.
 
 Help:
-  $_ME help [<command>]
+  ${_ME} help [<command>]
 EOM
 else
   cat <<EOM
 Usage:
-  $_ME <command> [--command-options] [<arguments>]
-  $_ME -h | --help
-  $_ME --version
+  ${_ME} <command> [--command-options] [<arguments>]
+  ${_ME} -h | --help
+  ${_ME} --version
 
 Options:
   -h --help  Display this help information.
   --version  Display version information.
 
 Help:
-  $_ME help [<command>]
+  ${_ME} help [<command>]
 EOM
 fi
 
@@ -870,7 +870,7 @@ $(_help_usage)
 $(commands --grouped)
 EOM
   else
-    _print_desc "$1"
+    _print_desc "${1}"
   fi
 }
 
@@ -885,7 +885,7 @@ if _is_sourced
 then
   desc "commands" <<EOM
 Usage:
-  $_ME commands --raw
+  ${_ME} commands --raw
 
 Options:
   --raw      Display the command list without formatting.
@@ -905,7 +905,7 @@ EOM
 else
   desc "commands" <<EOM
 Usage:
-  $_ME commands [--raw|--grouped]
+  ${_ME} commands [--raw|--grouped]
 
 Options:
   --raw      Display the command list without formatting.
@@ -944,11 +944,11 @@ fi
 
 desc "new" <<EOM
 Usage:
-  $_ME new [program]
+  ${_ME} new [program]
 
 Description:
   Create a Baskfile in the current directory. If a program name is provided,
-  generate a $_ME-dependent program with the provided name.
+  generate a ${_ME}-dependent program with the provided name.
 EOM
 _generate_baskfile() {
   if [[ -f "Baskfile" ]]
@@ -961,13 +961,13 @@ _generate_baskfile() {
   read -d '' _content <<TEMPLATE || true
 desc "hello" <<EOM
 Usage:
-  $_ME hello
+  ${_ME} hello
 
 Description:
   Print a greeting.
 EOM
 hello() {
-  echo ">> Hello from $_ME!"
+  echo ">> Hello from ${_ME}!"
 }
 TEMPLATE
 
@@ -976,16 +976,16 @@ TEMPLATE
   exit 0
 }
 _generate_bask_script() {
-  if [[ -f "$1" ]]
+  if [[ -f "${1}" ]]
   then
-    printf ">> %s already exists\n" "$1"
+    printf ">> %s already exists\n" "${1}"
     exit 0
   fi
 
   local _script_basename
-  _script_basename="$(basename "$1")"
+  _script_basename="$(basename "${1}")"
   _debug printf \
-    "_generate_bask_script() \$_script_basename: %s\n" \
+    "_generate_bask_script() \${_script_basename}: %s\n" \
     "${_script_basename}"
 
   local _content
@@ -1019,17 +1019,17 @@ hi() {
 _init
 TEMPLATE
 
-  printf ">> Creating new bask script: %s\n" "$1"
-  printf "%s\n" "${_content}" >> "$1"
-  chmod +x "$1"
+  printf ">> Creating new bask script: %s\n" "${1}"
+  printf "%s\n" "${_content}" >> "${1}"
+  chmod +x "${1}"
   exit 0
 }
 new() {
-  _debug printf "new() \$PWD: %s\n" "${_caller_directory}"
+  _debug printf "new() \${PWD}: %s\n" "${_caller_directory}"
 
   if [[ -n "${1:-}" ]]
   then
-    _generate_bask_script "$1"
+    _generate_bask_script "${1}"
   else
     _generate_baskfile
   fi

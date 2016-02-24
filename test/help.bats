@@ -17,28 +17,28 @@ _HELP_HEADER="\
 export _HELP_HEADER
 
 @test "\`help\` with no arguments exits with status 0." {
-  run "$_BASK" help
-  [ "$status" -eq 0 ]
+  run "${_BASK}" help
+  [ "${status}" -eq 0 ]
 }
 
 @test "\`help\` with no arguments prints default help." {
-  run "$_BASK" help
+  run "${_BASK}" help
   _compare "${_HELP_HEADER}" "$(IFS=$'\n'; echo "${lines[*]:0:11}")"
-  [[ $(IFS=$'\n'; echo "${lines[*]:0:11}") == "$_HELP_HEADER" ]]
+  [[ $(IFS=$'\n'; echo "${lines[*]:0:11}") == "${_HELP_HEADER}" ]]
 }
 
 @test "\`bask -h\` prints default help." {
-  run "$_BASK" -h
-  [[ $(IFS=$'\n'; echo "${lines[*]:0:11}") == "$_HELP_HEADER" ]]
+  run "${_BASK}" -h
+  [[ $(IFS=$'\n'; echo "${lines[*]:0:11}") == "${_HELP_HEADER}" ]]
 }
 
 @test "\`bask --help\` prints default help." {
-  run "$_BASK" --help
-  [[ $(IFS=$'\n'; echo "${lines[*]:0:11}") == "$_HELP_HEADER" ]]
+  run "${_BASK}" --help
+  [[ $(IFS=$'\n'; echo "${lines[*]:0:11}") == "${_HELP_HEADER}" ]]
 }
 
 @test "\`bask help help\` prints \`help\` subcommand usage." {
-  run "$_BASK" help help
+  run "${_BASK}" help help
   _expected="$(
     cat <<HEREDOC
 Usage:
@@ -49,5 +49,5 @@ Description:
 HEREDOC
   )"
   _compare "${_expected}" "${output}"
-  [[ "$output" == "$_expected" ]]
+  [[ "${output}" == "${_expected}" ]]
 }
