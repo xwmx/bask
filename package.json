@@ -1,6 +1,6 @@
 {
   "name": "bask",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "An mini-framework for command-centric Bash scripts.",
   "global": true,
   "install": "make install"
