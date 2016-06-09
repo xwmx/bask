@@ -350,7 +350,7 @@ _debug printf "\${_ME}: %s\n" "${_ME}"
 # $_this_basename
 #
 # Set to this file's basename
-_this_basename=$(basename "${BASH_SOURCE}")
+_this_basename=$(basename "${BASH_SOURCE[0]}")
 
 _debug printf "\${_this_basename}: %s\n" "${_this_basename}"
 
