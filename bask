@@ -718,9 +718,9 @@ _escape_function_name() {
 # implementation and simplicity. There is an alternative assignment form
 # that could be used here:
 #
-# var="$(cat <<'EOM'
+# var="$(cat <<'HEREDOC'
 # some message
-# EOM
+# HEREDOC
 # )
 #
 # However, this form appears to require trailing space after backslases to
@@ -737,9 +737,9 @@ desc() {
 
   if [[ -n ${2:-} ]]
   then
-    read -r -d '' "_desc_${escaped_function_name}" <<EOM
+    read -r -d '' "_desc_${escaped_function_name}" <<HEREDOC
 ${2}
-EOM
+HEREDOC
     _debug printf \
       "desc() set with argument: _desc_%s\n" \
       "${escaped_function_name}"
@@ -781,7 +781,7 @@ _print_desc() {
 
 # Version #####################################################################
 
-desc "version" <<EOM
+desc "version" <<HEREDOC
 Usage:
   ${_ME} ( version | --version )
 
@@ -789,28 +789,28 @@ Description:
   Display the current program version.
 
   To save you the trouble, the current version is ${_VERSION}
-EOM
+HEREDOC
 version() {
   printf "%s\n" "${_VERSION}"
 }
 
 # Help ########################################################################
 
-desc "help" <<EOM
+desc "help" <<HEREDOC
 Usage:
   ${_ME} help [<command>]
 
 Description:
   Display help information for ${_ME} or a specified command.
-EOM
+HEREDOC
 _help_header() {
 if _is_sourced
 then
-  desc "HELP_HEADER" <<EOM
+  desc "HELP_HEADER" <<HEREDOC
 ${_ME} - a ${_this_basename} script
-EOM
+HEREDOC
 else
-  desc "HELP_HEADER" <<EOM
+  desc "HELP_HEADER" <<HEREDOC
                  ___         ___         ___
     _____       /  /\       /  /\       /__/|
    /  /::\     /  /::\     /  /:/_     |  |:|
@@ -824,13 +824,13 @@ else
     \__\/       \__\/       \__\/       \__\/
 
 Version: ${_VERSION}
-EOM
+HEREDOC
 fi
 }
 _help_usage() {
 if _is_sourced
 then
-  cat <<EOM
+  cat <<HEREDOC
 Usage:
   ${_ME} <command> [--command-options] [<arguments>]
   ${_ME} -h | --help
@@ -840,9 +840,9 @@ Options:
 
 Help:
   ${_ME} help [<command>]
-EOM
+HEREDOC
 else
-  cat <<EOM
+  cat <<HEREDOC
 Usage:
   ${_ME} <command> [--command-options] [<arguments>]
   ${_ME} -h | --help
@@ -854,7 +854,7 @@ Options:
 
 Help:
   ${_ME} help [<command>]
-EOM
+HEREDOC
 fi
 
 }
@@ -862,13 +862,13 @@ _help_header
 help() {
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]]
   then
-    cat <<EOM
+    cat <<HEREDOC
 $(_print_desc "HELP_HEADER")
 
 $(_help_usage)
 
 $(commands --grouped)
-EOM
+HEREDOC
   else
     _print_desc "${1}"
   fi
@@ -883,7 +883,7 @@ EOM
 # '--group' option is not included.
 if _is_sourced
 then
-  desc "commands" <<EOM
+  desc "commands" <<HEREDOC
 Usage:
   ${_ME} commands --raw
 
@@ -892,7 +892,7 @@ Options:
 
 Description:
   Display the list of available commands.
-EOM
+HEREDOC
   commands() {
     if _command_argv_includes "--raw"
     then
@@ -903,7 +903,7 @@ EOM
     fi
   }
 else
-  desc "commands" <<EOM
+  desc "commands" <<HEREDOC
 Usage:
   ${_ME} commands [--raw|--grouped]
 
@@ -914,7 +914,7 @@ Options:
 
 Description:
   Display the list of available commands.
-EOM
+HEREDOC
   commands() {
     if _command_argv_includes "--raw"
     then
@@ -942,14 +942,14 @@ fi
 
 # new #########################################################################
 
-desc "new" <<EOM
+desc "new" <<HEREDOC
 Usage:
   ${_ME} new [program]
 
 Description:
   Create a Baskfile in the current directory. If a program name is provided,
   generate a ${_ME}-dependent program with the provided name.
-EOM
+HEREDOC
 _generate_baskfile() {
   if [[ -f "Baskfile" ]]
   then
@@ -959,13 +959,13 @@ _generate_baskfile() {
 
   local _content
   read -d '' _content <<TEMPLATE || true
-desc "hello" <<EOM
+desc "hello" <<HEREDOC
 Usage:
   ${_ME} hello
 
 Description:
   Print a greeting.
-EOM
+HEREDOC
 hello() {
   echo ">> Hello from ${_ME}!"
 }
@@ -1005,13 +1005,13 @@ _generate_bask_script() {
 
 source "\$(which ${_ME})"
 
-desc "hi" <<EOM
+desc "hi" <<HEREDOC
 Usage:
   \$_ME hi
 
 Description:
   Print a greeting.
-EOM
+HEREDOC
 hi() {
   echo ">> Hi from ${_script_basename}!"
 }
@@ -1062,13 +1062,13 @@ new() {
 # Simple Example
 # ==============
 #
-# desc "simple" <<EOM
+# desc "simple" <<HEREDOC
 # Usage:
 #   $_ME simple [<name>]
 #
 # Description:
 #   Print the greeting, "Hello, World!"
-# EOM
+# HEREDOC
 # simple() {
 #   if [[ -n "${1:-}" ]]
 #   then
@@ -1083,7 +1083,7 @@ new() {
 # Complex Example
 # ===============
 #
-# desc "complex" <<EOM
+# desc "complex" <<HEREDOC
 # Usage:
 #   $_ME complex [<name>] [--farewell]
 #
@@ -1092,7 +1092,7 @@ new() {
 #
 # Description:
 #   Print the greeting, "Hello, World!"
-# EOM
+# HEREDOC
 # complex() {
 #   local greeting="Hello"
 #   local arguments=()

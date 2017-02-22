@@ -126,13 +126,13 @@ micro() {
 ##### Simple Example
 
 ```bash
-desc simple <<EOM
+desc simple <<HEREDOC
 Usage:
   $_ME simple [<name>]
 
 Description:
   Print the greeting, "Hello, World!"
-EOM
+HEREDOC
 simple() {
   if [[ -n "${1:-}" ]]
   then
@@ -147,7 +147,7 @@ simple() {
 ##### Complex Example
 
 ```bash
-desc complex <<EOM
+desc complex <<HEREDOC
 Usage:
   $_ME complex [<name>] [--farewell]
 
@@ -156,7 +156,7 @@ Options:
 
 Description:
   Print the greeting, "Hello, World!"
-EOM
+HEREDOC
 complex() {
   local greeting="Hello"
   local arguments=()
