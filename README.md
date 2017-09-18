@@ -81,7 +81,7 @@ descriptions that can be run using the `bask` command directly. This can
 be useful for defining task-centric commands within a particular scope
 where a full program would be unnecessary.
 
-To generate a new "Baskfile", use `bask new` with no arguments:
+To generate a new Baskfile, use `bask new` with no arguments:
 
 ```bash
 bask new
