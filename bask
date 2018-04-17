@@ -135,7 +135,7 @@ DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
 # _debug()
 #
 # Usage:
-#   _debug printf "Debug info. Variable: %s\n" "$0"
+#   _debug printf "Debug info. Variable: %s\\n" "$0"
 #
 # A simple function for executing a specified command if the `$_USE_DEBUG`
 # variable has been set. The command is expected to print a message and
@@ -146,7 +146,7 @@ _debug() {
     # Prefix debug message with "bug (U+1F41B)"
     printf "🐛  "
     "${@}"
-    printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n"
+    printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\\n"
   fi
 }
 # debug()
@@ -168,7 +168,7 @@ debug() {
 # _die()
 #
 # Usage:
-#   _die printf "Error message. Variable: %s\n" "$0"
+#   _die printf "Error message. Variable: %s\\n" "$0"
 #
 # A simple function for exiting with an error after executing the specified
 # command. The command is expected to print a message and should typically
@@ -331,10 +331,10 @@ done
 _COMMAND_PARAMETERS=(${_COMMAND_ARGV[*]})
 unset _COMMAND_PARAMETERS[0]
 
-_debug printf "\${_CMD}: %s\n" "${_CMD}"
-_debug printf "\${_RAW_OPTIONS} (one per line):\n%s\n" "${_RAW_OPTIONS}"
-_debug printf "\${_COMMAND_ARGV[*]}: %s\n" "${_COMMAND_ARGV[*]}"
-_debug printf "\${_COMMAND_PARAMETERS[*]:-}: %s\n" "${_COMMAND_PARAMETERS[*]:-}"
+_debug printf "\${_CMD}: %s\\n" "${_CMD}"
+_debug printf "\${_RAW_OPTIONS} (one per line):\\n%s\\n" "${_RAW_OPTIONS}"
+_debug printf "\${_COMMAND_ARGV[*]}: %s\\n" "${_COMMAND_ARGV[*]}"
+_debug printf "\${_COMMAND_PARAMETERS[*]:-}: %s\\n" "${_COMMAND_PARAMETERS[*]:-}"
 
 ###############################################################################
 # Environment
@@ -345,14 +345,14 @@ _debug printf "\${_COMMAND_PARAMETERS[*]:-}: %s\n" "${_COMMAND_PARAMETERS[*]:-}"
 # Set to the program's basename.
 _ME=$(basename "${0}")
 
-_debug printf "\${_ME}: %s\n" "${_ME}"
+_debug printf "\${_ME}: %s\\n" "${_ME}"
 
 # $_this_basename
 #
 # Set to this file's basename
 _this_basename=$(basename "${BASH_SOURCE[0]}")
 
-_debug printf "\${_this_basename}: %s\n" "${_this_basename}"
+_debug printf "\${_this_basename}: %s\\n" "${_this_basename}"
 
 # _is_sourced()
 #
@@ -362,14 +362,14 @@ _is_sourced() {
   [[ ! "${_ME}" == "${_this_basename}" ]]
 }
 
-_debug printf "_is_sourced(): %s\n" "$(_is_sourced && echo "yes" || echo "no")"
+_debug printf "_is_sourced(): %s\\n" "$(_is_sourced && echo "yes" || echo "no")"
 
 # $_caller_directory
 #
 # Set to the current directory that the program is called from.
 _caller_directory="${PWD}"
 
-_debug printf "\${_caller_directory}: %s\n" "${_caller_directory}"
+_debug printf "\${_caller_directory}: %s\\n" "${_caller_directory}"
 
 ###############################################################################
 # Load Commands
@@ -436,8 +436,8 @@ _LOCAL_COMMANDS=()
 # Loads all of the commands sourced in the environment.
 _load_commands() {
 
-  _debug printf "_load_commands(): entering...\n"
-  _debug printf "_load_commands() declare -F:\n%s\n" "$(declare -F)"
+  _debug printf "_load_commands(): entering...\\n"
+  _debug printf "_load_commands() declare -F:\\n%s\\n" "$(declare -F)"
 
   # If this file is not sourced, indicating that commands are not defined in a
   # dependent script, then look for and source the first Baskfile in the
@@ -460,7 +460,7 @@ _load_commands() {
     local function_name
     function_name=$(printf "%s" "${c}" | awk '{ print $3 }')
 
-    _debug printf "_load_commands() \${function_name}: %s\n" "${function_name}"
+    _debug printf "_load_commands() \${function_name}: %s\\n" "${function_name}"
 
     # Add the function name to the $_DEFINED_COMMANDS array unless it starts
     # with an underscore or is one of the desc(), debug(), or die() functions,
@@ -494,13 +494,13 @@ _load_commands() {
   fi
 
   _debug printf \
-    "commands() \${_DEFINED_COMMANDS}:\n%s\n" \
+    "commands() \${_DEFINED_COMMANDS}:\\n%s\\n" \
     "${_DEFINED_COMMANDS[*]:-}"
   _debug printf \
-    "commands() \${_BUILTIN_COMMANDS}:\n%s\n" \
+    "commands() \${_BUILTIN_COMMANDS}:\\n%s\\n" \
     "${_BUILTIN_COMMANDS[*]:-}"
   _debug printf \
-    "commands() \${_LOCAL_COMMANDS}:\n%s\n" \
+    "commands() \${_LOCAL_COMMANDS}:\\n%s\\n" \
     "${_LOCAL_COMMANDS[*]:-}"
 }
 
@@ -517,8 +517,8 @@ _load_commands() {
 #
 # NOTE: must be called at end of program after all commands have been defined.
 _init() {
-  _debug printf "_init(): entering...\n"
-  _debug printf "_init() \${_CMD} (upon entering): %s\n" "${_CMD}"
+  _debug printf "_init(): entering...\\n"
+  _debug printf "_init() \${_CMD} (upon entering): %s\\n" "${_CMD}"
 
   # If $_CMD is blank, then set to help
   if [[ -z "${_CMD}" ]]
@@ -535,7 +535,7 @@ _init() {
     # Pass all comment arguments to the program except for the first ($0).
     ${_CMD} "${_COMMAND_PARAMETERS[@]:-}"
   else
-    _die printf "Unknown command: %s\n" "${_CMD}"
+    _die printf "Unknown command: %s\\n" "${_CMD}"
   fi
 }
 
@@ -588,10 +588,10 @@ _contains() {
   local test_list=(${*:2})
   for _test_element in "${test_list[@]:-}"
   do
-    _debug printf "_contains() \${_test_element}: %s\n" "${_test_element}"
+    _debug printf "_contains() \${_test_element}: %s\\n" "${_test_element}"
     if [[ "${_test_element}" == "${1}" ]]
     then
-      _debug printf "_contains() match: %s\n" "${1}"
+      _debug printf "_contains() match: %s\\n" "${1}"
       return 0
     fi
   done
@@ -728,7 +728,7 @@ _escape_function_name() {
 # escaping backslashes, which is more common.
 desc() {
   set +e
-  [[ -z "${1}" ]] && _die printf "desc: No command name specified.\n"
+  [[ -z "${1}" ]] && _die printf "desc: No command name specified.\\n"
 
   local raw_function_name
   local escaped_function_name
@@ -741,12 +741,12 @@ desc() {
 ${2}
 HEREDOC
     _debug printf \
-      "desc() set with argument: _desc_%s\n" \
+      "desc() set with argument: _desc_%s\\n" \
       "${escaped_function_name}"
   else
     read -r -d '' "_desc_${escaped_function_name}"
     _debug printf \
-      "desc() set with pipe: _desc_%s\n" \
+      "desc() set with pipe: _desc_%s\\n" \
       "${escaped_function_name}"
   fi
   set -e
@@ -768,9 +768,9 @@ _print_desc() {
   local var="_desc_${escaped_function_name}"
   if [[ -n ${!var:-} ]]
   then
-    printf "%s\n" "${!var}"
+    printf "%s\\n" "${!var}"
   else
-    printf "No additional information for \`%s\`\n" "${raw_function_name}"
+    printf "No additional information for \`%s\`\\n" "${raw_function_name}"
     return 1
   fi
 }
@@ -791,7 +791,7 @@ Description:
   To save you the trouble, the current version is ${_VERSION}
 HEREDOC
 version() {
-  printf "%s\n" "${_VERSION}"
+  printf "%s\\n" "${_VERSION}"
 }
 
 # Help ########################################################################
@@ -896,10 +896,10 @@ HEREDOC
   commands() {
     if _command_argv_includes "--raw"
     then
-      printf "%s\n" "${_DEFINED_COMMANDS[@]}"
+      printf "%s\\n" "${_DEFINED_COMMANDS[@]}"
     else
-      printf "Available commands:\n"
-      printf "  %s\n" "${_DEFINED_COMMANDS[@]}"
+      printf "Available commands:\\n"
+      printf "  %s\\n" "${_DEFINED_COMMANDS[@]}"
     fi
   }
 else
@@ -918,24 +918,24 @@ HEREDOC
   commands() {
     if _command_argv_includes "--raw"
     then
-      printf "%s\n" "${_DEFINED_COMMANDS[@]}"
+      printf "%s\\n" "${_DEFINED_COMMANDS[@]}"
     # Check for the '--grouped' flag using the first argument position
     # rather than `_command_argv_includes` because 1) it's superseded by
     # '--raw', anyway, and 2) it is called internally within the program, which
     # doesn't then populate the `$_COMMAND_ARGV` array again.
     elif [[ "${1}" == "--grouped" ]]
     then
-      printf "Default commands:\n"
-      printf "  %s\n" "${_BUILTIN_COMMANDS[@]}"
+      printf "Default commands:\\n"
+      printf "  %s\\n" "${_BUILTIN_COMMANDS[@]}"
       # Only display local command section when defined tasks are available.
       if [[ -n "${_LOCAL_COMMANDS[@]:-}" ]]
       then
-        printf "Local Commands:\n"
-        printf "  %s\n" "${_LOCAL_COMMANDS[@]:-}"
+        printf "Local Commands:\\n"
+        printf "  %s\\n" "${_LOCAL_COMMANDS[@]:-}"
       fi
     else
-      printf "Available commands:\n"
-      printf "  %s\n" "${_DEFINED_COMMANDS[@]}"
+      printf "Available commands:\\n"
+      printf "  %s\\n" "${_DEFINED_COMMANDS[@]}"
     fi
   }
 fi
@@ -953,7 +953,7 @@ HEREDOC
 _generate_baskfile() {
   if [[ -f "Baskfile" ]]
   then
-    printf ">> Baskfile already exists in this location.\n"
+    printf ">> Baskfile already exists in this location.\\n"
     exit 0
   fi
 
@@ -971,21 +971,21 @@ hello() {
 }
 TEMPLATE
 
-  printf ">> Creating new Baskfile in %s\n" "${_caller_directory}"
-  printf "%s\n" "${_content}" >> "Baskfile"
+  printf ">> Creating new Baskfile in %s\\n" "${_caller_directory}"
+  printf "%s\\n" "${_content}" >> "Baskfile"
   exit 0
 }
 _generate_bask_script() {
   if [[ -f "${1}" ]]
   then
-    printf ">> %s already exists\n" "${1}"
+    printf ">> %s already exists\\n" "${1}"
     exit 0
   fi
 
   local _script_basename
   _script_basename="$(basename "${1}")"
   _debug printf \
-    "_generate_bask_script() \${_script_basename}: %s\n" \
+    "_generate_bask_script() \${_script_basename}: %s\\n" \
     "${_script_basename}"
 
   local _content
@@ -1019,13 +1019,13 @@ hi() {
 _init
 TEMPLATE
 
-  printf ">> Creating new bask script: %s\n" "${1}"
-  printf "%s\n" "${_content}" >> "${1}"
+  printf ">> Creating new bask script: %s\\n" "${1}"
+  printf "%s\\n" "${_content}" >> "${1}"
   chmod +x "${1}"
   exit 0
 }
 new() {
-  _debug printf "new() \${PWD}: %s\n" "${_caller_directory}"
+  _debug printf "new() \${PWD}: %s\\n" "${_caller_directory}"
 
   if [[ -n "${1:-}" ]]
   then
@@ -1076,7 +1076,7 @@ new() {
 #   else
 #     local name="World"
 #   fi
-#   printf "Hello, %s!\n" "$name"
+#   printf "Hello, %s!\\n" "$name"
 # }
 #
 # ===============
@@ -1101,16 +1101,16 @@ new() {
 #   do
 #     case $arg in
 #     --farewell) greeting="Goodbye";;
-#     -*) _die printf "Unexpected option: %s\n" "$arg";;
+#     -*) _die printf "Unexpected option: %s\\n" "$arg";;
 #     *) arguments+=($arg);;
 #     esac
 #   done
 #   local name=${arguments[1]:-}
 #   if [[ -n "$name" ]]
 #   then
-#     printf "%s, %s!\n" "$greeting" "$name"
+#     printf "%s, %s!\\n" "$greeting" "$name"
 #   else
-#     printf "%s, World!\n" "$greeting"
+#     printf "%s, World!\\n" "$greeting"
 #   fi
 # }
 ###############################################################################
