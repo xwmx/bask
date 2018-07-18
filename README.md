@@ -76,10 +76,11 @@ the built-in `help` command.
 
 ### Baskfiles
 
-A `Baskfile` is simply a file containing bash functions and optional
-descriptions that can be run using the `bask` command directly. This can
-be useful for defining task-centric commands within a particular scope
-where a full program would be unnecessary.
+A `Baskfile` is a file containing bash functions and optional
+descriptions that can be run using the `bask` command directly, and can
+be defined on a project-by-project basis. This can be useful for defining
+task-centric commands within a particular scope where a full program
+would be unnecessary.
 
 A `Baskfile` is similar to a [Makefile](https://en.wikipedia.org/wiki/Makefile) or a [Rakefile](https://en.wikipedia.org/wiki/Rake_(software)) and looks like this:
 
@@ -103,9 +104,9 @@ To generate a new `Baskfile`, use `bask new` with no arguments:
 bask new
 ```
 
-When the `bask` program is run, it first looks in the
+When you run the `bask` program, it first looks in the
 current directory for a `Baskfile` and sources it if one is present. If it
-doesn't file a `Baskfile` in the current directory, it traverses the
+doesn't find a `Baskfile` in the current directory, it traverses the
 parent directories, sourcing the first `Baskfile` it encounters.
 
 ### Commands
