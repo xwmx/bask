@@ -81,6 +81,22 @@ descriptions that can be run using the `bask` command directly. This can
 be useful for defining task-centric commands within a particular scope
 where a full program would be unnecessary.
 
+A `Baskfile` is similar to a [`Makefile`](https://en.wikipedia.org/wiki/Makefile) or a [`Rakefile`](https://en.wikipedia.org/wiki/Rake_(software)) and looks like this:
+
+```bash
+# Baskfile
+desc "hello" <<HEREDOC
+Usage:
+  bask hello
+
+Description:
+  Print a greeting.
+HEREDOC
+hello() {
+  echo "Hello from bask!"
+}
+```
+
 To generate a new Baskfile, use `bask new` with no arguments:
 
 ```bash
