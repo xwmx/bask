@@ -470,13 +470,13 @@ _load_commands() {
     #
     # Secondly, add the function name to the $_LOCAL_COMMANDS array unless the
     # command name exists within the $_BUILTIN_COMMANDS array.
-    if ! ( [[ "${function_name}" =~ ^_(.*)    ]] || \
+    if ! { [[ "${function_name}" =~ ^_(.*)    ]] || \
            [[ "${function_name}" == "desc"    ]] || \
            [[ "${function_name}" == "debug"   ]] || \
            [[ "${function_name}" == "die"     ]] || \
            [[ "${function_name}" == "new"     ]] || \
            [[ "${function_name}" == "version" ]]
-    )
+    }
     then
       _DEFINED_COMMANDS+=("${function_name}")
 
