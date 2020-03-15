@@ -929,7 +929,7 @@ HEREDOC
       printf "Default commands:\\n"
       printf "  %s\\n" "${_BUILTIN_COMMANDS[@]}"
       # Only display local command section when defined tasks are available.
-      if [[ -n "${_LOCAL_COMMANDS[@]:-}" ]]
+      if [[ -n "${_LOCAL_COMMANDS[*]:-}" ]]
       then
         printf "Local Commands:\\n"
         printf "  %s\\n" "${_LOCAL_COMMANDS[@]:-}"
