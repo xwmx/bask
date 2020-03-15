@@ -1004,7 +1004,11 @@ _generate_bask_script() {
 #   ${_script_basename} help
 ###############################################################################
 
-source "\$(which ${_ME})"
+# Load ${_ME}
+#
+# https://github.com/koalaman/shellcheck/wiki/SC1090
+# shellcheck source=/dev/null
+source "\$(command -v ${_ME})"
 
 desc "hi" <<HEREDOC
 Usage:
