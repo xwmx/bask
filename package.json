@@ -1,7 +1,34 @@
 {
-  "name": "bask",
+  "name": "bask.sh",
   "version": "0.3.6",
   "description": "An mini-framework for command-centric Bash scripts.",
   "global": true,
-  "install": "make install"
+  "install": "make install",
+  "bin": {
+    "bask": "./bask"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "bats test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alphabetum/bask.git"
+  },
+  "keywords": [
+    "bash",
+    "task",
+    "runner",
+    "shell",
+    "command",
+    "line"
+  ],
+  "author": "William Melody",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/alphabetum/bask/issues"
+  },
+  "homepage": "https://github.com/alphabetum/bask#readme"
 }
