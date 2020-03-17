@@ -30,5 +30,6 @@
   "bugs": {
     "url": "https://github.com/alphabetum/bask/issues"
   },
-  "homepage": "https://github.com/alphabetum/bask#readme"
+  "homepage": "https://github.com/alphabetum/bask#readme",
+  "dependencies": {}
 }
