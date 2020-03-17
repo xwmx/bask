@@ -19,11 +19,9 @@
   },
   "keywords": [
     "bash",
-    "task",
-    "runner",
+    "task-runner",
     "shell",
-    "command",
-    "line"
+    "command-line"
   ],
   "author": "William Melody",
   "license": "GPL-2.0-only",
