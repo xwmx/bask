@@ -21,7 +21,11 @@
     "bash",
     "task-runner",
     "shell",
-    "command-line"
+    "command-line",
+    "cli",
+    "terminal",
+    "prompt",
+    "command"
   ],
   "author": "William Melody",
   "license": "GPL-2.0-only",
