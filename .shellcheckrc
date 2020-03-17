@@ -1,0 +1,11 @@
+###############################################################################
+# .shellcheckrc
+#
+# https://github.com/koalaman/shellcheck
+# https://github.com/koalaman/shellcheck/wiki/Ignore
+###############################################################################
+
+# Disable SC1090
+#
+# https://github.com/koalaman/shellcheck/wiki/SC1090
+disable=SC1090
