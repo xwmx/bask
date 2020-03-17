@@ -35,21 +35,27 @@ Some basic features available automatically:
 
 To install with [Homebrew](http://brew.sh/):
 
-    brew install alphabetum/taps/bask
+```bash
+brew install alphabetum/taps/bask
+```
 
 ### bpkg
 
 To install with [bpkg](http://www.bpkg.io/):
 
-    bpkg install alphabetum/bask
+```bash
+bpkg install alphabetum/bask
+```
 
 ### Manual
 
 To install manually, simply add the `bask` script to your `$PATH`. If
 you already have a `~/bin` directory, you can use the following command:
 
-    curl -L https://raw.github.com/alphabetum/bask/master/bask \
-      -o ~/bin/bask && chmod +x ~/bin/bask
+```bash
+curl -L https://raw.github.com/alphabetum/bask/master/bask \
+  -o ~/bin/bask && chmod +x ~/bin/bask
+```
 
 ## Usage
 
