@@ -786,7 +786,7 @@ _generate_baskfile() {
   fi
 
   local _content
-  read -d '' _content <<TEMPLATE || true
+  read -r -d '' _content <<TEMPLATE || true
 desc "hello" <<HEREDOC
 Usage:
   ${_ME} hello
@@ -817,7 +817,7 @@ _generate_bask_script() {
     "${_script_basename}"
 
   local _content
-  read -d '' _content <<TEMPLATE || true
+  read -r -d '' _content <<TEMPLATE || true
 #!/usr/bin/env bash
 ###############################################################################
 # ${_script_basename} - a ${_ME} script
