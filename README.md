@@ -39,6 +39,14 @@ To install with [Homebrew](http://brew.sh/):
 brew install alphabetum/taps/bask
 ```
 
+### npm
+
+To install with [npm](https://www.npmjs.com/package/bask.sh):
+
+```bash
+npm install --global bask.sh
+```
+
 ### bpkg
 
 To install with [bpkg](http://www.bpkg.io/):
