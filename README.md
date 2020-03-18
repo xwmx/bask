@@ -36,7 +36,7 @@ Some basic features available automatically:
 To install with [Homebrew](http://brew.sh/):
 
 ```bash
-brew install alphabetum/taps/bask
+brew install xwmx/taps/bask
 ```
 
 ### npm
@@ -52,7 +52,7 @@ npm install --global bask.sh
 To install with [bpkg](http://www.bpkg.io/):
 
 ```bash
-bpkg install alphabetum/bask
+bpkg install xwmx/bask
 ```
 
 ### Manual
@@ -61,7 +61,7 @@ To install manually, simply add the `bask` script to your `$PATH`. If
 you already have a `~/bin` directory, you can use the following command:
 
 ```bash
-curl -L https://raw.github.com/alphabetum/bask/master/bask \
+curl -L https://raw.github.com/xwmx/bask/master/bask \
   -o ~/bin/bask && chmod +x ~/bin/bask
 ```
 

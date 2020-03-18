@@ -823,7 +823,7 @@ _generate_bask_script() {
 # ${_script_basename} - a ${_ME} script
 #
 # Get ${_ME}:
-#   https://github.com/alphabetum/${_ME}
+#   https://github.com/xwmx/${_ME}
 #
 # Add this script and the ${_ME} program to your \$PATH.
 #

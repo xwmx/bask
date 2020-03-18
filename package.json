@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alphabetum/bask.git"
+    "url": "git+https://github.com/xwmx/bask.git"
   },
   "keywords": [
     "bash",
@@ -30,8 +30,8 @@
   "author": "William Melody",
   "license": "GPL-2.0-only",
   "bugs": {
-    "url": "https://github.com/alphabetum/bask/issues"
+    "url": "https://github.com/xwmx/bask/issues"
   },
-  "homepage": "https://github.com/alphabetum/bask#readme",
+  "homepage": "https://github.com/xwmx/bask#readme",
   "dependencies": {}
 }
