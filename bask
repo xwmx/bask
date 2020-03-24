@@ -12,6 +12,9 @@
 #     \  \::/     \  \:\       /__/:/     \  \:\
 #      \__\/       \__\/       \__\/       \__\/
 #
+# A mini-framework for command-centric Bash scripts.
+#
+# https://github.com/xwmx/bask
 #
 # Copyright (c) 2015 William Melody • hi@williammelody.com
 
@@ -651,6 +654,8 @@ else
    \  \::/     \  \:\       /__/:/     \  \:\\
     \__\/       \__\/       \__\/       \__\/
 
+A mini-framework for command-centric Bash scripts.
+
 Version: ${_VERSION}
 HEREDOC
 fi
@@ -694,6 +699,9 @@ help() {
 $(_print_desc "HELP_HEADER")
 
 $(_help_usage)
+
+Home:
+  https://github.com/xwmx/bask
 
 $(commands --grouped)
 HEREDOC
