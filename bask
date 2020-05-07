@@ -366,7 +366,7 @@ _init() {
   _load_commands
 
   # If the command is defined, run it, otherwise return an error.
-  if _contains "${_CMD}" "${_DEFINED_COMMANDS[*]:-}"
+  if _contains "${_CMD}" "${_DEFINED_COMMANDS[@]:-}"
   then
     # Pass all comment arguments to the program except for the first ($0).
     ${_CMD} "${_COMMAND_PARAMETERS[@]:-}"
@@ -417,20 +417,22 @@ _command_exists() {
 # _contains()
 #
 # Usage:
-#   _contains "$item" "${list[*]}"
+#   _contains "${item}" "${list[@]}"
 #
-# Takes an item and a list and determines whether the list contains the item.
+# Returns:
+#   0  If the item is included in the list.
+#   1  If not.
 _contains() {
-  local test_list=(${*:2})
-  for _test_element in "${test_list[@]:-}"
+  local _query="${1:-}"
+  local _list_element
+
+  shift
+
+  for _list_element
   do
-    _debug printf "_contains() \${_test_element}: %s\\n" "${_test_element}"
-    if [[ "${_test_element}" == "${1}" ]]
-    then
-      _debug printf "_contains() match: %s\\n" "${1}"
-      return 0
-    fi
+    [[ "${_list_element}" == "${_query}" ]] && return 0
   done
+
   return 1
 }
 
@@ -463,7 +465,7 @@ _join() {
 # This is a shortcut for simple cases where a command wants to check for the
 # presence of options quickly without parsing the options again.
 _command_argv_includes() {
-  _contains "${1}" "${_COMMAND_ARGV[*]}"
+  _contains "${1}" "${_COMMAND_ARGV[@]}"
 }
 
 # _blank()
