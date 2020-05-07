@@ -210,7 +210,7 @@ _debug printf "\${_caller_directory}: %s\\n" "${_caller_directory}"
 # Usage:
 #   _search_parents_and_source "filename"
 #
-# Recursively search parent directories for a file with the given basenameand
+# Recursively search parent directories for a file with the given basename and
 # source the first one that's found.
 _search_parents_and_source() {
   local source_file="${1}"
