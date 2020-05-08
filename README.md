@@ -96,7 +96,9 @@ be defined on a project-by-project basis. This can be useful for defining
 task-centric commands within a particular scope where a full program
 would be unnecessary.
 
-A `Baskfile` is similar to a [Makefile](https://en.wikipedia.org/wiki/Makefile) or a [Rakefile](https://en.wikipedia.org/wiki/Rake_(software)) and looks like this:
+A `Baskfile` is similar to a [Makefile](https://en.wikipedia.org/wiki/Makefile)
+or a [Rakefile](https://en.wikipedia.org/wiki/Rake_(software)) and looks like
+this:
 
 ```bash
 # Baskfile
@@ -167,11 +169,11 @@ HEREDOC
 simple() {
   if [[ -n "${1:-}" ]]
   then
-    local name="$1"
+    local _name="${1}"
   else
-    local name="World"
+    local _name="World"
   fi
-  printf "Hello, %s!\n" "$name"
+  printf "Hello, %s!\n" "${_name}"
 }
 ```
 
@@ -189,23 +191,31 @@ Description:
   Print the greeting, "Hello, World!"
 HEREDOC
 complex() {
-  local greeting="Hello"
-  local arguments=()
+  local _arguments=()
+  local _greeting="Hello"
 
-  for arg in "${_COMMAND_ARGV[@]:-}"
+  for __arg in "${_COMMAND_ARGV[@]:-}"
   do
-    case $arg in
-    --farewell) greeting="Goodbye";;
-    -*) _die printf "Unexpected option: %s\n" "$arg";;
-    *) arguments+=($arg);;
+    case "${__arg}" in
+      --farewell)
+        _greeting="Goodbye"
+        ;;
+      -*)
+        _die printf "Unexpected option: %s\n" "${__arg}"
+        ;;
+      *)
+        _arguments+=("${__arg}")
+        ;;
     esac
   done
-  local name=${arguments[1]:-}
-  if [[ -n "$name" ]]
+
+  local _name=${_arguments[1]:-}
+
+  if [[ -n "${_name}" ]]
   then
-    printf "%s, %s!\n" "$greeting" "$name"
+    printf "%s, %s!\n" "${_greeting}" "${_name}"
   else
-    printf "%s, World!\n" "$greeting"
+    printf "%s, World!\n" "${_greeting}"
   fi
 }
 ```
