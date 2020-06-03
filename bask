@@ -230,7 +230,7 @@ _debug printf "\${_CALLER_DIRECTORY}: %s\\n" "${_CALLER_DIRECTORY}"
 #   Recursively search parent directories for a file with the given basename
 #   and source the first one that's found.
 _search_parents_and_source() {
-  local _source_file="${1}"
+  local _source_file="${1:-}"
 
   if [[ / == "${PWD}" ]]
   then
@@ -307,7 +307,7 @@ _load_commands() {
     _function_list+=("${__line}")
   done < <(declare -F)
 
-  for __function in "${_function_list[@]}"
+  for __function in "${_function_list[@]:-}"
   do
     # Each element has the format `declare -f function_name`, so set the name
     # to only the 'function_name' part of the string.
@@ -419,7 +419,7 @@ _main() {
 # Takes a potential function name as an argument and returns whether a function
 # exists with that name.
 _function_exists() {
-  [[ "$(type -t "${1}")" == 'function' ]]
+  [[ "$(type -t "${1:-}")" == 'function' ]]
 }
 
 # _command_exists()
@@ -433,7 +433,7 @@ _function_exists() {
 # For information on why `hash` is used here, see:
 # http://stackoverflow.com/a/677212
 _command_exists() {
-  hash "${1}" 2>/dev/null
+  hash "${1:-}" 2>/dev/null
 }
 
 # _contains()
@@ -471,7 +471,7 @@ _contains() {
 # More Information:
 #   http://stackoverflow.com/a/17841619
 _join() {
-  local IFS="${1}"
+  local IFS="${1:-}"
   shift
   printf "%s\\n" "${*}"
 }
@@ -487,7 +487,7 @@ _join() {
 # This is a shortcut for simple cases where a command wants to check for the
 # presence of options quickly without parsing the options again.
 _command_argv_includes() {
-  _contains "${1}" "${_COMMAND_ARGV[@]}"
+  _contains "${1:-}" "${_COMMAND_ARGV[@]}"
 }
 
 # _blank()
@@ -787,7 +787,7 @@ HEREDOC
     # rather than `_command_argv_includes` because 1) it's superseded by
     # '--raw', anyway, and 2) it is called internally within the program, which
     # doesn't then populate the `$_COMMAND_ARGV` array again.
-    elif [[ "${1}" == "--grouped" ]]
+    elif [[ "${1:-}" == "--grouped" ]]
     then
       printf "Default commands:\\n"
       printf "  %s\\n" "${_BUILTIN_COMMANDS[@]}"
@@ -840,7 +840,7 @@ TEMPLATE
   exit 0
 }
 _generate_bask_script() {
-  if [[ -f "${1}" ]]
+  if [[ -f "${1:-}" ]]
   then
     printf ">> %s already exists\\n" "${1}"
     exit 0
