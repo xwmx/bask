@@ -201,7 +201,7 @@ complex() {
         _greeting="Goodbye"
         ;;
       -*)
-        _die printf "Unexpected option: %s\n" "${__arg}"
+        _exit_1 printf "Unexpected option: %s\n" "${__arg}"
         ;;
       *)
         _arguments+=("${__arg}")
