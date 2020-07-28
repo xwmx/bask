@@ -12,7 +12,7 @@
 
 # bask
 
-A mini-framework for command-centric Bash scripts.
+A framework for command-centric Bash scripts.
 
 ## Features
 
@@ -20,11 +20,11 @@ Some basic features available automatically:
 
 - Strict Mode,
 - Help template, printable with `-h` or `--help`,
-- `debug` printing with `--debug` flag,
-- `die` command with error message printing and exiting,
+- `_debug` printing with `--debug` flag,
+- `_exit_1`, `_return_1`, and `_warn` functions with error message printing,
 - Option normalization (eg, `-ab -c` -> `-a -b -c`) and option parsing,
 - Automatic arbitrary command loading,
-- A DSL for specifying per-command help,
+- A simple approach for specifying per-command help,
 - Built-in commands for help, version, and command listing,
 - Conventions for distinguishing between functions and program commands,
 - Useful utility functions.
@@ -167,12 +167,8 @@ Description:
   Print the greeting, "Hello, World!"
 HEREDOC
 simple() {
-  if [[ -n "${1:-}" ]]
-  then
-    local _name="${1}"
-  else
-    local _name="World"
-  fi
+  local _name="${1:-World}"
+
   printf "Hello, %s!\n" "${_name}"
 }
 ```
@@ -191,10 +187,10 @@ Description:
   Print the greeting, "Hello, World!"
 HEREDOC
 complex() {
-  local _arguments=()
   local _greeting="Hello"
+  local _name="World"
 
-  for __arg in "${_COMMAND_ARGV[@]:-}"
+  for __arg in "${@:-}"
   do
     case "${__arg}" in
       --farewell)
@@ -204,19 +200,15 @@ complex() {
         _exit_1 printf "Unexpected option: %s\n" "${__arg}"
         ;;
       *)
-        _arguments+=("${__arg}")
+        if [[ "${_name}" == "World" ]] && [[ -n "${__arg:-}" ]]
+        then
+          _name="${__arg}"
+        fi
         ;;
     esac
   done
 
-  local _name=${_arguments[1]:-}
-
-  if [[ -n "${_name}" ]]
-  then
-    printf "%s, %s!\n" "${_greeting}" "${_name}"
-  else
-    printf "%s, World!\n" "${_greeting}"
-  fi
+  printf "%s, %s!\n" "${_greeting}" "${_name}"
 }
 ```
 
