@@ -429,6 +429,27 @@ _main() {
 # Utility Functions
 ###############################################################################
 
+# _alias_subcommand()
+#
+# Usage:
+#   _alias_subcommand <subcommand> <alias>
+#
+# Description:
+#   Create an <alias> of <subcommand>. NOTE: aliases also have to be added to
+#   the $_SUBCOMMANDS variable.
+_alias_subcommand() {
+  local _subcommand="${1:-}"
+  local _alias="${2:-}"
+
+  if [[ -z "${_subcommand}" ]] || [[ -z "${_alias}" ]]
+  then
+    return 1
+  fi
+
+  eval "desc \"${_alias}\" \"\$_desc_${_subcommand}\""
+  eval "${_alias}() { ${_subcommand} \"\${@}\"; }"
+}
+
 # _function_exists()
 #
 # Usage:
