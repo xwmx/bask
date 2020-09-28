@@ -436,10 +436,11 @@ _alias_subcommand() {
 # _function_exists()
 #
 # Usage:
-#   _function_exists "possible_function_name"
+#   _function_exists <name>
 #
-# Takes a potential function name as an argument and returns whether a function
-# exists with that name.
+# Description:
+#   Takes a potential function name as an argument and returns whether a
+#   function exists with that name.
 _function_exists() {
   [[ "$(type -t "${1:-}")" == 'function' ]]
 }
@@ -447,63 +448,164 @@ _function_exists() {
 # _command_exists()
 #
 # Usage:
-#   _command_exists "possible_command_name"
+#   _command_exists <name>
 #
-# Takes a potential command name as an argument and returns whether a command
-# exists with that name.
+# Exit / Error Status:
+#   0 (success, true) If a command with <name> is defined in the current
+#                     environment.
+#   1 (error,  false) If not.
 #
-# For information on why `hash` is used here, see:
+# Information on why `hash` is used here:
 # http://stackoverflow.com/a/677212
 _command_exists() {
-  hash "${1:-}" 2>/dev/null
+  hash "${1}" 2>/dev/null
 }
 
 # _contains()
 #
 # Usage:
-#   _contains "${item}" "${list[@]}"
+#   _contains <query> <list-item>...
 #
-# Returns:
-#   0  If the item is included in the list.
-#   1  If not.
+# Exit / Error Status:
+#   0 (success, true)  If the item is included in the list.
+#   1 (error,  false)  If not.
+#
+# Examples:
+#   _contains "${_query}" "${_list[@]}"
 _contains() {
   local _query="${1:-}"
-  local _list_element
-
   shift
 
-  for _list_element
+  if [[ -z "${_query}"  ]] ||
+     [[ -z "${*:-}"     ]]
+  then
+    return 1
+  fi
+
+  for __element in "${@}"
   do
-    [[ "${_list_element}" == "${_query}" ]] && return 0
+    [[ "${__element}" == "${_query}" ]] && return 0
   done
 
   return 1
 }
 
+# _download_from()
+#
+# Usage:
+#   _download_from <url> [<outfile>]
+#
+# Description:
+#   Download the file at <url> and print to standard output or <outfile>, if
+#   present. Uses `curl` if available, falling back to `wget`. Messages from
+#   `curl` and `wget` are suppressed.
+#
+# Exit / Error Status:
+#   0 (success, true)  If the download is successful.
+#   1 (error,  false)  If there was an error.
+#
+# Examples:
+#   # Download and stream to standard output.
+#   _download_from "https://example.com" | less
+#
+#   # Download to outfile with error handling.
+#   if ! _download_from "https://example.com/example.pdf" /path/to/example.pdf
+#   then
+#     printf "Download error.\\n"
+#     exit 1
+#   fi
+_download_from() {
+  local _downloaded=0
+  local _target_path="${2:-}"
+  local _timeout=15
+  local _url="${1:-}"
+
+  if [[ -z "${_url}" ]] ||
+     [[ ! "${_url}" =~ ^https\:|^http\:|^file\:|^ftp\:|^sftp\: ]]
+  then
+    return 1
+  fi
+
+  if [[ -n "${_target_path}" ]]
+  then
+    if hash "curl" 2>/dev/null
+    then
+      curl                              \
+        --silent                        \
+        --location                      \
+        --connect-timeout "${_timeout}" \
+        "${_url}"                       \
+        --output "${_target_path}"      &&
+          _downloaded=1
+    elif hash "wget" 2>/dev/null
+    then
+      wget                              \
+        --quiet                         \
+        --connect-timeout="${_timeout}" \
+        --dns-timeout="${_timeout}"     \
+        -O "${_target_path}"            \
+        "${_url}"                       \
+        2>/dev/null                     &&
+          _downloaded=1
+    fi
+  else
+    if hash "curl" 2>/dev/null
+    then
+      curl                              \
+        --silent                        \
+        --location                      \
+        --connect-timeout "${_timeout}" \
+        "${_url}"                       &&
+          _downloaded=1
+    elif hash "wget" 2>/dev/null
+    then
+      wget                              \
+        --quiet                         \
+        --connect-timeout="${_timeout}" \
+        --dns-timeout="${_timeout}"     \
+        -O -                            \
+        "${_url}"                       \
+        2>/dev/null                     &&
+          _downloaded=1
+    fi
+  fi
+
+  if ! ((_downloaded))
+  then
+    return 1
+  fi
+}
+
 # _join()
 #
 # Usage:
-#   _join <separator> <array>
+#   _join <delimiter> <list-item>...
 #
-# Examples:
-#   _join , a "b c" d     => a,b c,d
-#   _join / var local tmp => var/local/tmp
-#   _join , "${FOO[@]}"   => a,b,c
+# Description:
+#   Print a string containing all <list-item> arguments separated by
+#   <delimeter>.
 #
-# More Information:
-#   http://stackoverflow.com/a/17841619
+# Example:
+#   _join "${_delimeter}" "${_list[@]}"
+#
+# More information:
+#   https://stackoverflow.com/a/17841619
 _join() {
-  local IFS="${1:-}"
+  local _delimiter="${1}"
   shift
-  printf "%s\\n" "${*}"
+  printf "%s" "${1}"
+  shift
+  printf "%s" "${@/#/${_delimiter}}" | tr -d '[:space:]'
 }
 
 # _blank()
 #
 # Usage:
-#   _blank "$an_argument"
+#   _blank [<string>]
 #
-# Takes an argument and returns true if it is blank.
+# Exit / Error Status:
+#   0 (success, true)  If the argument is blank.
+#   1 (error,  false)  If the argument is present.
 _blank() {
   [[ -z "${1:-}" ]]
 }
@@ -511,9 +613,11 @@ _blank() {
 # _present()
 #
 # Usage:
-#   _present "$an_argument"
+#   _present [<string>]
 #
-# Takes an argument and returns true if it is present.
+# Exit / Error Status:
+#   0 (success, true)  If the argument is present.
+#   1 (error,  false)  If the argument is blank.
 _present() {
   [[ -n "${1:-}" ]]
 }
@@ -523,9 +627,9 @@ _present() {
 # Usage:
 #   _interactive_input
 #
-# Returns:
-#   0  If the current input is interactive (eg, a shell).
-#   1  If the current input is stdin / piped input.
+# Exit / Error Status:
+#   0 (success, true)  If the current input is interactive (eg, a shell).
+#   1 (error,  false)  If the current input is stdin / piped input.
 _interactive_input() {
   [[ -t 0 ]]
 }
@@ -540,6 +644,94 @@ _interactive_input() {
 #   1  If the current input is interactive (eg, a shell).
 _piped_input() {
   ! _interactive_input
+}
+
+# _readlink()
+#
+# Usage:
+#   _readlink [-e|-f|<options>] <path/to/symlink>
+#
+# Options:
+#   -f  All but the last component must exist.
+#   -e  All components must exist.
+#
+# Description:
+#   Wrapper for `readlink` that provides portable versions of GNU `readlink -f`
+#   and `readlink -e`, which canonicalize by following every symlink in every
+#   component of the given name recursively.
+#
+# More Information:
+#   http://stackoverflow.com/a/1116890
+_readlink() {
+  local _target_path
+  local _target_file
+  local _final_directory
+  local _final_path
+  local _option
+
+  for __arg in "${@:-}"
+  do
+    case "${__arg}" in
+      -e|-f)
+        _option="${__arg}"
+        ;;
+      -*)
+        # do nothing
+        # ':' is bash no-op
+        :
+        ;;
+      *)
+        if [[ -z "${_target_path:-}" ]]
+        then
+          _target_path="${__arg}"
+        fi
+        ;;
+    esac
+  done
+
+  if [[ -z "${_option}" ]]
+  then
+    readlink "${@}"
+  else
+    if [[ -z "${_target_path:-}" ]]
+    then
+      printf "_readlink: missing operand\\n"
+      return 1
+    fi
+
+    cd "$(dirname "${_target_path}")" || return 1
+    _target_file="$(basename "${_target_path}")"
+
+    # Iterate down a (possible) chain of symlinks
+    while [[ -L "${_target_file}" ]]
+    do
+      _target_file="$(readlink "${_target_file}")"
+      cd "$(dirname "${_target_file}")" || return 1
+      _target_file="$(basename "${_target_file}")"
+    done
+
+    # Compute the canonicalized name by finding the physical path
+    # for the directory we're in and appending the target file.
+    _final_directory="$(pwd -P)"
+    _final_path="${_final_directory}/${_target_file}"
+
+    if [[ "${_option}" == "-f" ]]
+    then
+      printf "%s\\n" "${_final_path}"
+      return 0
+    elif [[ "${_option}" == "-e" ]]
+    then
+      if [[ -e "${_final_path}" ]]
+      then
+        printf "%s\\n" "${_final_path}"
+        return 0
+      else
+        return 1
+      fi
+    else
+      return 1
+    fi
+  fi
 }
 
 ###############################################################################
