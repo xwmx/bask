@@ -327,13 +327,14 @@ _load_commands() {
     # Secondly, add the function name to the $_LOCAL_COMMANDS array unless the
     # command name exists within the $_BUILTIN_COMMANDS array.
     if ! {
-      [[ -z "${_function_name}"              ]] || \
-      [[    "${_function_name}" =~ ^_(.*)    ]] || \
-      [[    "${_function_name}" == "desc"    ]] || \
-      [[    "${_function_name}" == "debug"   ]] || \
-      [[    "${_function_name}" == "die"     ]] || \
-      [[    "${_function_name}" == "new"     ]] || \
-      [[    "${_function_name}" == "version" ]]
+      [[ -z "${_function_name}"               ]] || \
+      [[    "${_function_name}" =~ ^_(.*)     ]] || \
+      [[    "${_function_name}" == "debug"    ]] || \
+      [[    "${_function_name}" == "desc"     ]] || \
+      [[    "${_function_name}" == "describe" ]] || \
+      [[    "${_function_name}" == "die"      ]] || \
+      [[    "${_function_name}" == "new"      ]] || \
+      [[    "${_function_name}" == "version"  ]]
     }
     then
       _DEFINED_COMMANDS+=("${_function_name}")
@@ -568,104 +569,75 @@ _die() { _exit_1 "${@}"; }
 _return_1() { _warn "${@:-}" && return 1; }
 
 ###############################################################################
-# desc
+# describe
 ###############################################################################
 
-# _escape_function_name()
+# describe()
 #
 # Usage:
-#   _escape_function_name "some-function:name"
+#   describe <name> <description>
+#   describe --get <name>
 #
-# Replace ":" and "-" with "__COLON__" and "__HYPHEN__" in function names in
-# order to conform to Bash identifier restrictions.
+# Options:
+#   --get  Print the description for <name> if one has been set.
 #
-# Bash allows ":" and "-" in function names, but they are not allowed in
-# identifiers for variables. In order to store the description in a variable
-# that matches the function name, this function escapes the function name in
-# order to make it suitable for use in a variable identifier.
-#
-# Uses built-in substring replacement:
-# http://www.tldp.org/LDP/abs/html/parameter-substitution.html#EXPREPL1
-_escape_function_name() {
-  local _escaped_colons="${1//:/__COLON__}"
-  local _escaped_hyphens="${_escaped_colons//-/__HYPHEN__}"
-
-  printf "%s" "${_escaped_hyphens}"
-}
-
-# desc()
-#
+# Examples:
+# ```
+#   describe "list" <<HEREDOC
 # Usage:
-#   desc command "description"
+#   ${_ME} list
 #
-# Create a description for a specified command name. The command description
-# text can be passed as the second argument or as standard input.
-#
-# To make the description text available to other functions, desc() assigns the
-# text to a variable with the format $_desc_function_name
-#
-# NOTE:
-#
-# The `read` form of assignment is used for a balance of ease of
-# implementation and simplicity. There is an alternative assignment form
-# that could be used here:
-#
-# var="$(cat <<'HEREDOC'
-# some message
+# Description:
+#   List items.
 # HEREDOC
-# )
 #
-# However, this form appears to require trailing space after backslases to
-# preserve newlines, which is unexpected. Using `read` simply requires
-# escaping backslashes, which is more common.
-desc() {
+# describe --get "list"
+# ```
+#
+# Set or print a description for a specified command or function <name>. The
+# <description> text can be passed as the second argument or as standard input.
+#
+# To make the <description> text available to other functions, `describe()`
+# assigns the text to a variable with the format `$____describe_<name>`.
+#
+# When the `--get` option is used, the description for <name> is printed, if
+# one has been set.
+describe() {
   set +e
-  [[ -z "${1}" ]] && _exit_1 printf "desc: No command name specified.\\n"
-  local _function_name_raw="${1}"
+  [[ -z "${1:-}" ]] &&
+    _exit_1 printf "describe(): <name> required.\\n"
 
-  local _function_name_escaped=
-  _function_name_escaped="$(_escape_function_name "${_function_name_raw}")"
+  if [[ "${1}" == "--get" ]]
+  then # get ------------------------------------------------------------------
+    [[ -z "${2:-}" ]] &&
+      _exit_1 printf "describe(): <description> required.\\n"
 
-  if [[ -n ${2:-} ]]
-  then
-    read -r -d '' "_desc_${_function_name_escaped}" <<HEREDOC
+    local _name="${2:-}"
+    local _describe_var="____describe_${_name}"
+
+    if [[ ! "${_name}" =~ ^\- ]] && [[ -n "${!_describe_var:-}" ]]
+    then
+      printf "%s\\n" "${!_describe_var}"
+    else
+      printf "No additional information for \`%s\`\\n" "${_name}"
+    fi
+  else # set ------------------------------------------------------------------
+    if [[ -n "${2:-}" ]]
+    then # argument is present
+      read -r -d '' "____describe_${1}" <<HEREDOC
 ${2}
 HEREDOC
-    _debug printf \
-      "desc() set with argument: _desc_%s\\n" \
-      "${_function_name_escaped}"
-  else
-    read -r -d '' "_desc_${_function_name_escaped}"
-    _debug printf \
-      "desc() set with pipe: _desc_%s\\n" \
-      "${_function_name_escaped}"
+    else # no argument is present, so assume piped input
+      read -r -d '' "____describe_${1}"
+    fi
   fi
   set -e
 }
 
-# _print_desc()
-#
-# Usage:
-#   _print_desc <command>
-#
-# Description:
-#   Prints the description for a given command, provided the description has
-#   been set using the desc() function.
-_print_desc() {
-  local _function_name_raw="${1}"
+# Support legacy `desc` name.
+desc() { describe "${@:-}"; }
 
-  local _function_name_escaped=
-  _function_name_escaped="$(_escape_function_name "${_function_name_raw}")"
-
-  local _var="_desc_${_function_name_escaped}"
-  if [[ -n ${!_var:-} ]]
-  then
-    printf "%s\\n" "${!_var}"
-  else
-    printf "No additional information for \`%s\`\\n" "${_function_name_raw}"
-    return 1
-  fi
-}
+_print_desc() { describe --get "${@:-}"; }
 
 ###############################################################################
 # Default Commands
@@ -755,7 +727,7 @@ help() {
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]]
   then
     cat <<HEREDOC
-$(_print_desc "HELP_HEADER")
+$(describe --get "HELP_HEADER")
 
 $(_help_usage)
 
@@ -765,7 +737,7 @@ Home:
 $(commands --grouped)
 HEREDOC
   else
-    _print_desc "${1}"
+    describe --get "${1}"
   fi
 }
 
