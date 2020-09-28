@@ -319,10 +319,10 @@ _load_commands() {
       "${_function_name}"
 
     # Add the function name to the $_DEFINED_COMMANDS array unless it starts
-    # with an underscore or is one of the desc(), debug(), or die() functions,
-    # since these are treated as having 'private' visibility. Also exclude
-    # init() and version(), which will be readded explicityly based on whether
-    # this file is being sourced or run directly.
+    # with an underscore or is one of the describe(), debug(), or die()
+    # functions, since these are treated as having 'private' visibility. Also
+    # exclude init() and version(), which will be readded explicityly based on
+    # whether this file is being sourced or run directly.
     #
     # Secondly, add the function name to the $_LOCAL_COMMANDS array unless the
     # command name exists within the $_BUILTIN_COMMANDS array.
@@ -429,7 +429,7 @@ _alias_subcommand() {
     return 1
   fi
 
-  eval "desc \"${_alias}\" \"\$_desc_${_subcommand}\""
+  eval "describe \"${_alias}\" \"\$_describe_${_subcommand}\""
   eval "${_alias}() { ${_subcommand} \"\${@}\"; }"
 }
 
@@ -645,7 +645,7 @@ _print_desc() { describe --get "${@:-}"; }
 
 # Version #####################################################################
 
-desc "version" <<HEREDOC
+describe "version" <<HEREDOC
 Usage:
   ${_ME} ( version | --version )
 
@@ -660,7 +660,7 @@ version() {
 
 # Help ########################################################################
 
-desc "help" <<HEREDOC
+describe "help" <<HEREDOC
 Usage:
   ${_ME} help [<command>]
 
@@ -670,11 +670,11 @@ HEREDOC
 _help_header() {
 if _is_sourced
 then
-  desc "HELP_HEADER" <<HEREDOC
+  describe "HELP_HEADER" <<HEREDOC
 ${_ME} - a ${_THIS_BASENAME} script
 HEREDOC
 else
-  desc "HELP_HEADER" <<HEREDOC
+  describe "HELP_HEADER" <<HEREDOC
                  ___         ___         ___
     _____       /  /\       /  /\       /__/|
    /  /::\     /  /::\     /  /:/_     |  |:|
@@ -750,7 +750,7 @@ HEREDOC
 # '--group' option is not included.
 if _is_sourced
 then
-  desc "commands" <<HEREDOC
+  describe "commands" <<HEREDOC
 Usage:
   ${_ME} commands --raw
 
@@ -770,7 +770,7 @@ HEREDOC
     fi
   }
 else
-  desc "commands" <<HEREDOC
+  describe "commands" <<HEREDOC
 Usage:
   ${_ME} commands [--raw|--grouped]
 
@@ -809,7 +809,7 @@ fi
 
 # new #########################################################################
 
-desc "new" <<HEREDOC
+describe "new" <<HEREDOC
 Usage:
   ${_ME} new [program]
 
@@ -826,7 +826,7 @@ _generate_baskfile() {
 
   local _content
   read -r -d '' _content <<TEMPLATE || true
-desc "hello" <<HEREDOC
+describe "hello" <<HEREDOC
 Usage:
   ${_ME} hello
 
@@ -876,7 +876,7 @@ _generate_bask_script() {
 # shellcheck source=/dev/null
 source "\$(command -v ${_ME})"
 
-desc "hi" <<HEREDOC
+describe "hi" <<HEREDOC
 Usage:
   \$_ME hi
 
@@ -912,7 +912,7 @@ new() {
 #
 # Example command group structure:
 #
-# desc example ""   - Optional. A short description for the command.
+# describe example ""   - Optional. A short description for the command.
 # example() { : }   - The command called by the user.
 #
 # For usage formatting conventions see:
@@ -924,7 +924,7 @@ new() {
 # Micro Example
 # ==============
 #
-# desc "micro" "Usage: $_ME micro"
+# describe "micro" "Usage: $_ME micro"
 # micro() {
 #   echo "Hello, World!"
 # }
@@ -933,7 +933,7 @@ new() {
 # Simple Example
 # ==============
 #
-# desc "simple" <<HEREDOC
+# describe "simple" <<HEREDOC
 # Usage:
 #   $_ME simple [<name>]
 #
@@ -954,7 +954,7 @@ new() {
 # Complex Example
 # ===============
 #
-# desc "complex" <<HEREDOC
+# describe "complex" <<HEREDOC
 # Usage:
 #   $_ME complex [<name>] [--farewell]
 #
