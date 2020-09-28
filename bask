@@ -716,8 +716,6 @@ else
     \__\/       \__\/       \__\/       \__\/
 
 A mini-framework for command-centric Bash scripts.
-
-Version: ${_VERSION}
 HEREDOC
 fi
 }
