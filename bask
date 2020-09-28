@@ -398,7 +398,13 @@ _alias_subcommand() {
     return 1
   fi
 
-  eval "describe \"${_alias}\" \"\$____describe_${_subcommand}\""
+  local _subcommand_escaped=
+  _subcommand_escaped="$(describe escape "${1:-}")"
+
+  local _alias_escaped=
+  _alias_escaped="$(describe escape "${1:-}")"
+
+  eval "describe \"${_alias_escaped}\" \"\$____describe_${_subcommand_escaped}\""
   eval "${_alias}() { ${_subcommand} \"\${@}\"; }"
 }
 
@@ -719,6 +725,28 @@ _return_1() { _warn "${@:-}" && return 1; }
 # describe
 ###############################################################################
 
+# _escape_function_name()
+#
+# Usage:
+#   _escape_function_name "some-function:name"
+#
+# Replace ":" and "-" with "__COLON__" and "__HYPHEN__" in function names in
+# order to conform to Bash identifier restrictions.
+#
+# Bash allows ":" and "-" in function names, but they are not allowed in
+# identifiers for variables. In order to store the description in a variable
+# that matches the function name, this function escapes the function name in
+# order to make it suitable for use in a variable identifier.
+#
+# Uses built-in substring replacement:
+# http://www.tldp.org/LDP/abs/html/parameter-substitution.html#EXPREPL1
+_escape_function_name() {
+  local _escaped_colons="${1//:/__COLON__}"
+  local _escaped_hyphens="${_escaped_colons//-/__HYPHEN__}"
+
+  printf "%s" "${_escaped_hyphens}"
+}
+
 # describe()
 #
 # Usage:
@@ -754,13 +782,23 @@ describe() {
   [[ -z "${1:-}" ]] &&
     _exit_1 printf "describe(): <name> required.\\n"
 
-  if [[ "${1}" == "--get" ]]
+  if [[ "${1}" == "escape" ]]
+  then
+    local _escaped_colons="${2//:/__COLON__}"
+    local _escaped_hyphens="${_escaped_colons//-/__HYPHEN__}"
+
+    printf "%s" "${_escaped_hyphens}"
+  elif [[ "${1}" == "--get" ]]
   then # get ------------------------------------------------------------------
     [[ -z "${2:-}" ]] &&
       _exit_1 printf "describe(): <description> required.\\n"
 
     local _name="${2:-}"
-    local _describe_var="____describe_${_name}"
+
+    local _name_escaped=
+    _name_escaped="$(describe escape "${_name}")"
+
+    local _describe_var="____describe_${_name_escaped}"
 
     if [[ ! "${_name}" =~ ^\- ]] && [[ -n "${!_describe_var:-}" ]]
     then
@@ -769,21 +807,25 @@ describe() {
       printf "No additional information for \`%s\`\\n" "${_name}"
     fi
   else # set ------------------------------------------------------------------
+    local _name_escaped=
+    _name_escaped="$(describe escape "${1}")"
+
     if [[ -n "${2:-}" ]]
     then # argument is present
-      read -r -d '' "____describe_${1}" <<HEREDOC
+      read -r -d '' "____describe_${_name_escaped}" <<HEREDOC
 ${2}
 HEREDOC
     else # no argument is present, so assume piped input
-      read -r -d '' "____describe_${1}"
+      read -r -d '' "____describe_${_name_escaped}"
     fi
   fi
   set -e
 }
 
-# Support legacy `desc` name.
+# Support deprecated `desc` name.
 desc() { describe "${@:-}"; }
 
+# Support deprecated `_print_desc()`.
 _print_desc() { describe --get "${@:-}"; }
 
 ###############################################################################
