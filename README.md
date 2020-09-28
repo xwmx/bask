@@ -21,10 +21,10 @@ Some basic features available automatically:
 - Strict Mode,
 - Help template, printable with `-h` or `--help`,
 - `_debug` printing with `--debug` flag,
-- `_exit_1`, `_return_1`, and `_warn` functions with error message printing,
+- `_exit_1` and `_warn` functions with error message printing,
 - Option normalization (eg, `-ab -c` -> `-a -b -c`) and option parsing,
 - Automatic arbitrary command loading,
-- A simple approach for specifying per-command help,
+- A simple approach for specifying per-command help with `describe`,
 - Built-in commands for help, version, and command listing,
 - Conventions for distinguishing between functions and program commands,
 - Useful utility functions.
@@ -84,9 +84,9 @@ bask new <script name>
 This generates a script that sources the `bask` command. You can add
 bash functions in this script and they will be automatically set as
 sub-commands available as arguments to the program. Additionally, you
-can easily document the programs using the built-in `desc` function. The
-help / usage / description information set here is available in the via
-the built-in `help` command.
+can easily document the programs using the built-in `describe` function.
+The help / usage / description information set here is available in the
+via the built-in `help` command.
 
 ### Baskfiles
 
@@ -102,7 +102,7 @@ this:
 
 ```bash
 # Baskfile
-desc "hello" <<HEREDOC
+describe "hello" <<HEREDOC
 Usage:
   bask hello
 
@@ -130,14 +130,14 @@ parent directories, sourcing the first `Baskfile` it encounters.
 Commands in `bask` are simply Bash functions with optional descriptions.
 Defined functions will be automatically loaded and displayed as part of
 the usage information when the parent command is run. Command-specific
-usage information can be set with the `desc` function, and this usage
+usage information can be set with the `describe` function, and this usage
 information will be made automatically available to the parent program's
 `help` command.
 
 Example command group structure:
 
 ```bash
-desc example ""  # Optional. A short description for the command.
+describe example ""  # Optional. A short description for the command.
 example() { : }  # The command called by the user.
 ```
 
@@ -150,7 +150,7 @@ For usage formatting conventions see:
 ##### Micro Example
 
 ```bash
-desc micro "Usage: $_ME micro"
+describe micro "Usage: $_ME micro"
 micro() {
   echo "Hello, World!"
 }
@@ -159,7 +159,7 @@ micro() {
 ##### Simple Example
 
 ```bash
-desc simple <<HEREDOC
+describe simple <<HEREDOC
 Usage:
   $_ME simple [<name>]
 
@@ -176,7 +176,7 @@ simple() {
 ##### Complex Example
 
 ```bash
-desc complex <<HEREDOC
+describe complex <<HEREDOC
 Usage:
   $_ME complex [<name>] [--farewell]
 
