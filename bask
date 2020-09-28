@@ -398,7 +398,7 @@ _alias_subcommand() {
     return 1
   fi
 
-  eval "describe \"${_alias}\" \"\$_describe_${_subcommand}\""
+  eval "describe \"${_alias}\" \"\$____describe_${_subcommand}\""
   eval "${_alias}() { ${_subcommand} \"\${@}\"; }"
 }
 
@@ -920,35 +920,52 @@ else
   describe "commands" <<HEREDOC
 Usage:
   ${_ME} commands [--raw | --grouped]
+  ${_ME} commands alias <name> <alias>
 
 Options:
   --raw      Display the command list without formatting.
   --grouped  Display the list of commands with default and locally defined
              commands in labeled groups.
 
+Subcommands:
+  alias      Create an <alias> of a given command <name>, with linked help.
+
 Description:
   Display the list of available commands.
 HEREDOC
   commands() {
-    if [[ "${1:-}" =~ "--raw" ]]
-    then
-      printf "%s\\n" "${_DEFINED_COMMANDS[@]}"
-    elif [[ "${1:-}" == "--grouped" ]]
-    then
-      printf "Default commands:\\n"
-      printf "  %s\\n" "${_BUILTIN_COMMANDS[@]}"
-      # Only display local command section when defined tasks are available.
-      if [[ -n "${_LOCAL_COMMANDS[*]:-}" ]]
-      then
-        printf "\\nLocal commands:\\n"
-        printf "  %s\\n" "${_LOCAL_COMMANDS[@]:-}"
-      fi
-    else
-      printf "Available commands:\\n"
-      printf "  %s\\n" "${_DEFINED_COMMANDS[@]}"
-    fi
+    case "${1:-}" in
+      --raw)
+        printf "%s\\n" "${_DEFINED_COMMANDS[@]}"
+        ;;
+      --grouped)
+        printf "Default commands:\\n"
+        printf "  %s\\n" "${_BUILTIN_COMMANDS[@]}"
+
+        # Only display local command section when defined tasks are available.
+        if [[ -n "${_LOCAL_COMMANDS[*]:-}" ]]
+        then
+          printf "\\nLocal commands:\\n"
+          printf "  %s\\n" "${_LOCAL_COMMANDS[@]:-}"
+        fi
+        ;;
+      alias)
+        if [[ -z "${2:-}" ]] || [[ -z "${3:-}" ]]
+        then
+          _exit_1 _help "commands"
+        else
+          _alias_subcommand "${2:-}" "${3:-}"
+        fi
+        ;;
+      *)
+        printf "Available commands:\\n"
+        printf "  %s\\n" "${_DEFINED_COMMANDS[@]}"
+        ;;
+    esac
   }
 fi
+
+commands alias "commands" "subcommands"
 
 # new #########################################################################
 
