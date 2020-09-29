@@ -709,6 +709,27 @@ _readlink() {
   fi
 }
 
+# _sed_i()
+#
+# Usage:
+#   _sed_i <sed option>...
+#
+# Description:
+#   `sed -i` takes an extension on macOS, but that extension can cause
+#   errors in GNU `sed`. `_sed_i`detects which one is available and calls
+#   `sed -i` with the appropriate arguments.
+#
+#   https://stackoverflow.com/q/43171648
+#   https://stackoverflow.com/a/16746032
+_sed_i() {
+  if sed --help >/dev/null 2>&1
+  then # GNU
+    sed -i "${@}"
+  else # BSD
+    sed -i '' "${@}"
+  fi
+}
+
 ###############################################################################
 # Deprecated Helpers
 ###############################################################################
