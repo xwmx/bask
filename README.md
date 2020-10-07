@@ -36,7 +36,8 @@ Some basic features available automatically:
 To install with [Homebrew](http://brew.sh/):
 
 ```bash
-brew install xwmx/taps/bask
+brew tap xwmx/taps
+brew install bask
 ```
 
 ### npm
