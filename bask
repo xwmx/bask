@@ -210,9 +210,9 @@ _search_parents_and_source() {
   then
     cd "${_CALLER_DIRECTORY}"
     return
-  elif [[ -f "${_source_file}" ]]
+  elif [[ -f "${PWD}/${_source_file}" ]]
   then
-    source "${_source_file}"
+    source "${PWD}/${_source_file}"
     cd "${_CALLER_DIRECTORY}"
     return
   else
@@ -234,7 +234,7 @@ _source_baskfile() {
 
   if [[ -f "${PWD}/${_source_file}" ]]
   then
-    source "${_source_file}"
+    source "${PWD}/${_source_file}"
   else
     _search_parents_and_source "${_source_file}"
   fi
