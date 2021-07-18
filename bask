@@ -298,14 +298,15 @@ _load_commands() {
     # Secondly, add the function name to the $_LOCAL_COMMANDS array unless the
     # command name exists within the $_BUILTIN_COMMANDS array.
     if ! {
-      [[ -z "${_function_name}"               ]] || \
-      [[    "${_function_name}" =~ ^_(.*)     ]] || \
-      [[    "${_function_name}" == "debug"    ]] || \
-      [[    "${_function_name}" == "desc"     ]] || \
-      [[    "${_function_name}" == "describe" ]] || \
-      [[    "${_function_name}" == "die"      ]] || \
-      [[    "${_function_name}" == "new"      ]] || \
-      [[    "${_function_name}" == "version"  ]]
+      [[ -z "${_function_name}"                       ]] || \
+      [[    "${_function_name}" =~ ^_(.*)             ]] || \
+      [[    "${_function_name}" == "bats_readlinkf"   ]] || \
+      [[    "${_function_name}" == "debug"            ]] || \
+      [[    "${_function_name}" == "desc"             ]] || \
+      [[    "${_function_name}" == "describe"         ]] || \
+      [[    "${_function_name}" == "die"              ]] || \
+      [[    "${_function_name}" == "new"              ]] || \
+      [[    "${_function_name}" == "version"          ]]
     }
     then
       _DEFINED_COMMANDS+=("${_function_name}")
@@ -1024,6 +1025,8 @@ HEREDOC
     esac
   }
 fi
+_alias_subcommand "commands" "subcommands"
+_alias_subcommand "commands" "tasks"
 
 # new #########################################################################
 
