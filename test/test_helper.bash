@@ -11,6 +11,11 @@ setup() {
   #
   # The location of the `bask` script being tested.
   export _BASK="${BATS_TEST_DIRNAME}/../bask"
+
+  # `$_NEWLINE`
+  #
+  # Newline with ANSI-C quoting.
+  export _NEWLINE=$'\n'
 }
 
 ###############################################################################

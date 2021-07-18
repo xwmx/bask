@@ -2,25 +2,12 @@
 
 load test_helper
 
-@test "\`bask\` with no arguments exits with status 0." {
+@test "'bask' with no arguments exits with 0 and prints default help." {
   run "${_BASK}"
-  [ "${status}" -eq 0 ]
-}
 
-@test "\`bask\` with no arguments prints default help." {
-  run "${_BASK}"
-  _expected="\
-                 ___         ___         ___
-    _____       /  /\       /  /\       /__/|
-   /  /::\     /  /::\     /  /:/_     |  |:|
-  /  /:/\:\   /  /:/\:\   /  /:/ /\    |  |:|
- /  /:/~/::\ /  /:/~/::\ /  /:/ /::\ __|  |:|
-/__/:/ /:/\:/__/:/ /:/\:/__/:/ /:/\:/__/\_|:|____
-\  \:\/:/~/:\  \:\/:/__\  \:\/:/~/:\  \:\/:::::/
- \  \::/ /:/ \  \::/     \  \::/ /:/ \  \::/~~~~
-  \  \:\/:/   \  \:\      \__\/ /:/   \  \:\\
-   \  \::/     \  \:\       /__/:/     \  \:\\
-    \__\/       \__\/       \__\/       \__\/"
-  _compare "${_expected}" "$(IFS=$'\n'; echo "${lines[*]:0:11}")"
-  [[ "$(IFS=$'\n'; echo "${lines[*]:0:11}")" == "${_expected}" ]]
+  printf "\${status}: '%s'\\n" "${status}"
+  printf "\${output}: '%s'\\n" "${output}"
+
+  [[ "${status}" -eq  0                                       ]]
+  [[ "${output}" =~   Usage:${_NEWLINE}\ \ bask\ \<command\>  ]]
 }
